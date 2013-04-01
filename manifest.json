@@ -4,6 +4,10 @@
     "description": "gReader is not Google Reader.",
     "version": "0.0.1",
     "homepage_url": "http://marboo.biz",
+    "content_scripts": [{
+        "matches": ["*://*/*"],
+        "js": ["js/content.js"]
+    }],
     "background": {
         "scripts": ["js/background.js"]
     },
