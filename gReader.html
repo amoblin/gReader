@@ -4,24 +4,26 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>gReader</title>
-        <link href="http://www.google.com/reader/ui/favicon.ico" rel="SHORTCUT ICON">
+        <link href="/media/images/marboo/favicon.ico" rel="SHORTCUT ICON">
         <meta name="application-name" content="gReader">
         <meta name="description" content="通过gReader将您的资讯和博客整合到一个地方">
         <meta name="application-url" content="/reader/view/">
-        <link rel="icon" href="http://www.google.com/reader/ui/352024653-app-icon-32.png" sizes="32x32">
-        <link rel="icon" href="http://www.google.com/reader/ui/3068170011-app-icon-64.png" sizes="64x64">
-        <link href="http://www.google.com/reader/ui/favicon.ico" rel="SHORTCUT ICON">
+        <link rel="icon" href="/media/images/marboo/352024653-app-icon-32.png" sizes="32x32">
+        <link rel="icon" href="/media/images/marboo/3068170011-app-icon-64.png" sizes="64x64">
+        <link href="/media/images/marboo/favicon.ico" rel="SHORTCUT ICON">
         <link type="text/css" rel="stylesheet" href="gReader_files/main.css">
         <link type="text/css" rel="stylesheet" href="./gReader_files/4273095679-zh-CN-scroll.css">
         <link type="text/css" rel="stylesheet" href="./gReader_files/2159580021-zh-CN-scroll_large_density.css" disabled="">
         <link type="text/css" rel="stylesheet" href="./gReader_files/1771541332-zh-CN-scroll_medium_density.css">
         <link type="text/css" rel="stylesheet" href="./gReader_files/2617741944-zh-CN-scroll_small_density.css" disabled="">
+        <!--
         <link rel="alternate" type="application/atom+xml" href="http://www.google.com/reader/atom/user%2F08003626058048695165%2Fstate%2Fcom.google%2Freading-list" title="csip 在 Google 阅读器中的阅读列表" id="auto-discovery">
+        -->
     </head>
     <body class="webkit loaded">
-        <a href="http://www.google.com/reader/axs" class="offscreen">点击此处获取支持 ARIA 的 Google 阅读器。</a>
         <!-- hide: 顶部导航 -->
         <!--
+        <a href="http://www.google.com/reader/axs" class="offscreen">点击此处获取支持 ARIA 的 Google 阅读器。</a>
         <div id="gb" class="gbemi">
             <script>window.gbar&&gbar.eli&&gbar.eli()</script>
             <div id="gbw">
@@ -209,9 +211,10 @@
                 <div id="quick-add-helptext">例如，googleblog.blogspot.com 或 CNN</div>
             </form>
         </div>
+        <!-- 主视图 -->
         <div id="main" class="" style="">
             <div id="nav">
-                <div id="logo-section"> <a id="logo-link" href="http://www.google.com/reader/view/">阅读器</a> </div>
+                <div id="logo-section"> <a id="logo-link" href="/reader/view/">阅读器</a> </div>
                 <div id="lhn-add-subscription-section">
                     <span id="lhn-add-subscription" class="jfk-button-primary jfk-button" role="button" style="-webkit-user-select: none;" tabindex="0">订阅</span>
                 </div>
@@ -219,7 +222,7 @@
                     <div id="scrollable-sections" class="mouseout" style="height: 377.1999969482422px;">
                         <div id="home-section">
                             <div id="overview-selector" class="selector no-icon selected">
-                                <a href="./gReader_files/gReader.html" class="link"><span class="text">主页</span></a>
+                                <a href="#" class="link"><span class="text">主页</span></a>
                             </div>
                         </div>
                         <div id="lhn-selectors" class="section lhn-section section-minimized ">
@@ -234,14 +237,19 @@
                             </div>
                             <div class="lhn-section-primary">
                                 <div id="reading-list-selector" class="selector no-icon unread">
-                                    <a href="http://www.google.com/reader/view/user/-/state/com.google/reading-list" class="link"><span class="text"><span class="label">所有条目</span><span id="reading-list-unread-count" class="unread-count">(1000+)</span></span></a>
+                                    <a href="/reader/view/user/-/state/com.google/reading-list" class="link"><span class="text"><span class="label">所有条目</span><span id="reading-list-unread-count" class="unread-count"></span></span></a>
                                 </div>
                             </div>
                             <div class="lhn-section-secondary">
                                 <div id="star-selector" class="selector">
-                                    <a href="http://www.google.com/reader/view/user/-/state/com.google/starred" class="link"><div class="selector-icon"></div><span class="text">加星标的条目</span></a>
-                                </div><div id="trends-selector" class="selector"><a href="http://www.google.com/reader/view/#trends-page" class="link"><div class="selector-icon"></div><span class="text">趋势</span></a></div>
-                                <div id="directory-selector" class="selector no-icon"><a href="http://www.google.com/reader/view/#directory-page" class="link"><span class="text">浏览其他内容</span></a></div>
+                                    <a href="/reader/view/user/-/state/com.google/starred" class="link"><div class="selector-icon"></div><span class="text">加星标的条目</span></a>
+                                </div>
+                                <div id="trends-selector" class="selector">
+                                    <a href="/reader/view/#trends-page" class="link"><div class="selector-icon"></div><span class="text">趋势</span></a>
+                                </div>
+                                <div id="directory-selector" class="selector no-icon">
+                                    <a href="/reader/view/#directory-page" class="link"><span class="text">浏览其他内容</span></a>
+                                </div>
                             </div>
                             <div class="selectors-footer"></div>
                         </div>
@@ -259,21 +267,21 @@
                                 <ul id="recommendations-tree" class="scroll-tree">
                                     <li class="folder unselectable expanded" id="recs-tree-item-0-main">
                                     <div class="toggle folder-toggle toggle-d-0"></div>
-                                    <a class="link lhn-section-primary" href="http://www.google.com/reader/view/splice/feed%2Fhttp%3A%2F%2Fwww.lupaworld.com%2Fmyrss.php%7Cfeed%2Fhttp%3A%2F%2Fwww.linuxidc.com%2FrssFeed.aspx%7Cfeed%2Fhttp%3A%2F%2Fubuntu.group.javaeye.com%2Frss%7Cfeed%2Fhttp%3A%2F%2Frss.sina.com.cn%2Fnews%2Fchina%2Ffocus15.xml%7Cpop%2Ftopic%2Ftop%2Flanguage%2Fzh-CN" id="recs-tree-item-0-link"><div class="icon folder-icon icon-d-0" id="recs-tree-item-0-icon"></div><div class="name-text folder-name-text name-text-d-0 name folder-name name-d-0" id="recs-tree-item-0-name">探索</div><div class="unread-count folder-unread-count unread-count-d-0" id="recs-tree-item-0-unread-count"></div></a>
+                                    <a class="link lhn-section-primary" href="/reader/view/splice/feed%2Fhttp%3A%2F%2Fwww.lupaworld.com%2Fmyrss.php%7Cfeed%2Fhttp%3A%2F%2Fwww.linuxidc.com%2FrssFeed.aspx%7Cfeed%2Fhttp%3A%2F%2Fubuntu.group.javaeye.com%2Frss%7Cfeed%2Fhttp%3A%2F%2Frss.sina.com.cn%2Fnews%2Fchina%2Ffocus15.xml%7Cpop%2Ftopic%2Ftop%2Flanguage%2Fzh-CN" id="recs-tree-item-0-link"><div class="icon folder-icon icon-d-0" id="recs-tree-item-0-icon"></div><div class="name-text folder-name-text name-text-d-0 name folder-name name-d-0" id="recs-tree-item-0-name">探索</div><div class="unread-count folder-unread-count unread-count-d-0" id="recs-tree-item-0-unread-count"></div></a>
                                     <ul class="lhn-section-secondary">
                                         <li class="sub unselectable expanded" id="recs-tree-item-1-main">
                                         <div class="toggle sub-toggle toggle-d-1 hidden"></div>
-                                        <a class="link" href="http://www.google.com/reader/view/pop/topic%2Ftop%2Flanguage%2Fzh-CN" id="recs-tree-item-1-link"><div class="icon sub-icon icon-d-1" id="recs-tree-item-1-icon"></div><div class="name-text sub-name-text name-text-d-1 name sub-name name-d-1" id="recs-tree-item-1-name">推荐的条目</div><div class="unread-count sub-unread-count unread-count-d-1" id="recs-tree-item-1-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-1-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
+                                        <a class="link" href="/reader/view/pop/topic%2Ftop%2Flanguage%2Fzh-CN" id="recs-tree-item-1-link"><div class="icon sub-icon icon-d-1" id="recs-tree-item-1-icon"></div><div class="name-text sub-name-text name-text-d-1 name sub-name name-d-1" id="recs-tree-item-1-name">推荐的条目</div><div class="unread-count sub-unread-count unread-count-d-1" id="recs-tree-item-1-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-1-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
                                         </li>
                                         <li class="folder unselectable collapsed" id="recs-tree-item-2-main">
                                         <div class="toggle folder-toggle toggle-d-1">
                                         </div>
-                                        <a class="link" href="http://www.google.com/reader/view/splice/feed%2Fhttp%3A%2F%2Fwww.lupaworld.com%2Fmyrss.php%7Cfeed%2Fhttp%3A%2F%2Fwww.linuxidc.com%2FrssFeed.aspx%7Cfeed%2Fhttp%3A%2F%2Fubuntu.group.javaeye.com%2Frss%7Cfeed%2Fhttp%3A%2F%2Frss.sina.com.cn%2Fnews%2Fchina%2Ffocus15.xml" id="recs-tree-item-2-link"><div class="icon folder-icon icon-d-1" id="recs-tree-item-2-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1" id="recs-tree-item-2-name">推荐源</div><div class="unread-count folder-unread-count unread-count-d-1" id="recs-tree-item-2-unread-count"></div></a>
+                                        <a class="link" href="/reader/view/splice/feed%2Fhttp%3A%2F%2Fwww.lupaworld.com%2Fmyrss.php%7Cfeed%2Fhttp%3A%2F%2Fwww.linuxidc.com%2FrssFeed.aspx%7Cfeed%2Fhttp%3A%2F%2Fubuntu.group.javaeye.com%2Frss%7Cfeed%2Fhttp%3A%2F%2Frss.sina.com.cn%2Fnews%2Fchina%2Ffocus15.xml" id="recs-tree-item-2-link"><div class="icon folder-icon icon-d-1" id="recs-tree-item-2-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1" id="recs-tree-item-2-name">推荐源</div><div class="unread-count folder-unread-count unread-count-d-1" id="recs-tree-item-2-unread-count"></div></a>
                                         <ul>
                                             <li class="sub unselectable expanded" id="recs-tree-item-3-main">
                                             <div class="toggle sub-toggle toggle-d-2 hidden">
                                             </div>
-                                            <a class="link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Fwww.lupaworld.com%2Fmyrss.php" id="recs-tree-item-3-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-3-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-3-name">新闻 - LUPA开源社区</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-3-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-3-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
+                                            <a class="link" href="/reader/view/feed/http%3A%2F%2Fwww.lupaworld.com%2Fmyrss.php" id="recs-tree-item-3-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-3-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-3-name">新闻 - LUPA开源社区</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-3-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-3-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
                                             <li class="sub unselectable expanded" id="recs-tree-item-4-main"><div class="toggle sub-toggle toggle-d-2 hidden"></div><a class="link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Fwww.linuxidc.com%2FrssFeed.aspx" id="recs-tree-item-4-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-4-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-4-name">Linux公社 - Linux系统门户网站</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-4-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-4-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
                                             <li class="sub unselectable expanded" id="recs-tree-item-5-main"><div class="toggle sub-toggle toggle-d-2 hidden"></div><a class="link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Fubuntu.group.javaeye.com%2Frss" id="recs-tree-item-5-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-5-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-5-name">Ubuntu For Fun</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-5-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-5-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
                                             <li class="sub unselectable expanded" id="recs-tree-item-6-main"><div class="toggle sub-toggle toggle-d-2 hidden"></div><a class="link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Frss.sina.com.cn%2Fnews%2Fchina%2Ffocus15.xml" id="recs-tree-item-6-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-6-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-6-name">国内要闻-新浪新闻</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-6-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-6-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
@@ -283,7 +291,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            <div class="lhn-section-footer"><a href="http://www.google.com/reader/view/#directory-page" id="recommendations-tree-view-all">查看所有推荐的内容 »</a></div>
+                            <div class="lhn-section-footer"><a href="/reader/view/#directory-page" id="recommendations-tree-view-all">查看所有推荐的内容 »</a></div>
                         </div>
                         <div id="lhn-subscriptions" class="section lhn-section  ">
                             <div id="lhn-subscriptions-minimize" class="section-button section-minimize"></div>
