@@ -1,0 +1,25 @@
+{
+    "manifest_version": 2,
+    "name": "gReader",
+    "description": "gReader is not Google Reader.",
+    "version": "0.0.1",
+    "homepage_url": "http://marboo.biz",
+    "background": {
+        "scripts": ["js/background.js"]
+    },
+    "permissions": [
+        "tabs", "notifications", "http://*/*"
+    ],
+    "browser_action": {
+        "default_icon": "images/greader-32.png",
+        "default_title": "Marboo Note"
+    },
+    "icons": {
+        "16": "images/greader-32.png",
+        "48": "images/greader-64.png",
+        "128": "images/greader-64.png"
+    },
+    "web_accessible_resources": ["images/marboo-64.png"],
+    "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'",
+    "update_url": "http://marboo.biz/crx/update.xml"
+}
