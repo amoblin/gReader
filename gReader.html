@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>gReader</title>
         <link href="http://www.google.com/reader/ui/favicon.ico" rel="SHORTCUT ICON">
-        <meta name="application-name" content="Google 阅读器">
-        <meta name="description" content="通过 Google 阅读器将您的资讯和博客整合到一个地方">
+        <meta name="application-name" content="gReader">
+        <meta name="description" content="通过gReader将您的资讯和博客整合到一个地方">
         <meta name="application-url" content="/reader/view/">
         <link rel="icon" href="http://www.google.com/reader/ui/352024653-app-icon-32.png" sizes="32x32">
         <link rel="icon" href="http://www.google.com/reader/ui/3068170011-app-icon-64.png" sizes="64x64">
@@ -19,9 +20,12 @@
     </head>
     <body class="webkit loaded">
         <a href="http://www.google.com/reader/axs" class="offscreen">点击此处获取支持 ARIA 的 Google 阅读器。</a>
+        <!-- hide: 顶部导航 -->
+        <!--
         <div id="gb" class="gbemi">
             <script>window.gbar&&gbar.eli&&gbar.eli()</script>
-            <div id="gbw"><div id="gbzw">
+            <div id="gbw">
+                <div id="gbzw">
                     <div id="gbz">
                         <span class="gbtcb">
                         </span>
@@ -68,29 +72,103 @@
                     </div>
                     <div id="gbq2" class="gbt">
                         <div id="gbqfw">
-                            <form id="gbqf" name="gbqf" method="get" action="" onsubmit="gbar.logger.il(31);return executeSearch();" style="max-width: 512px;"><fieldset class="gbxx"><legend class="gbxx">隐藏字段</legend><div id="gbqffd"></div></fieldset><fieldset class="gbqff" id="gbqff" style="max-width: 512px;"><legend class="gbxx">搜索阅读器</legend><div id="gbfwa" class="gbqfwa "><div id="gbqfqw" class="gbqfqw"><div id="gbqfaa"></div><div id="gbqfqwb" class="gbqfqwb"><input id="gbqfq" class="gbqfif" name="q" type="text" autocomplete="off" value="" placeholder="搜索阅读器"></div><div id="gbqfab"></div><div class="goog-inline-block search-restrict" title="" role="listbox" style="-webkit-user-select: none;" tabindex="0" aria-haspopup="false"><div class="goog-inline-block search-restrict-caption"></div><div class="goog-inline-block search-restrict-dropdown">&nbsp;</div></div></div></div></fieldset><div id="gbqfbw" style=""><button id="gbqfb" aria-label="Google 搜索" class="gbqfb"><span class="gbqfi"></span></button></div></form>
+                            <form id="gbqf" name="gbqf" method="get" action="" onsubmit="gbar.logger.il(31);return executeSearch();" style="max-width: 512px;">
+                                <fieldset class="gbxx">
+                                    <legend class="gbxx">隐藏字段</legend>
+                                    <div id="gbqffd">
+                                    </div>
+                                </fieldset>
+                                <fieldset class="gbqff" id="gbqff" style="max-width: 512px;">
+                                    <legend class="gbxx">搜索阅读器</legend>
+                                    <div id="gbfwa" class="gbqfwa ">
+                                        <div id="gbqfqw" class="gbqfqw">
+                                            <div id="gbqfaa"></div>
+                                            <div id="gbqfqwb" class="gbqfqwb">
+                                                <input id="gbqfq" class="gbqfif" name="q" type="text" autocomplete="off" value="" placeholder="搜索阅读器">
+                                            </div>
+                                            <div id="gbqfab">
+                                            </div>
+                                            <div class="goog-inline-block search-restrict" title="" role="listbox" style="-webkit-user-select: none;" tabindex="0" aria-haspopup="false">
+                                                <div class="goog-inline-block search-restrict-caption">
+                                                </div>
+                                                <div class="goog-inline-block search-restrict-dropdown">&nbsp;</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div id="gbqfbw" style="">
+                                    <button id="gbqfb" aria-label="Google 搜索" class="gbqfb">
+                                        <span class="gbqfi"></span>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div id="gbu" style="">
                     <div id="gbvg" class="gbvg">
-                        <h2 class="gbxx">Account Options</h2><span class="gbtcb"></span><ol class="gbtc"><li class="gbt"></li><li class="gbt" guidedhelpid="gbacsw"><a class="gbgt gbg4p" id="gbg4" href="https://profiles.google.com/?hl=zh-CN&tab=yX" onclick="gbar.tg(event,this)" aria-haspopup="true" aria-owns="gbd4" style=""><span id="gbgs4d" style="text-align: left;"><span id="gbgs4dn" style="max-width: 308px; text-align: left;">崔贵林</span><span class="gbmai"></span><span class="gbmab"></span><span class="gbmac"></span></span></a><div class="gbm" id="gbd4" aria-owner="gbg4">
+                        <h2 class="gbxx">Account Options</h2>
+                        <span class="gbtcb"></span>
+                        <ol class="gbtc">
+                            <li class="gbt"></li>
+                            <li class="gbt" guidedhelpid="gbacsw">
+                            <a class="gbgt gbg4p" id="gbg4" href="https://profiles.google.com/?hl=zh-CN&tab=yX" onclick="gbar.tg(event,this)" aria-haspopup="true" aria-owns="gbd4" style=""><span id="gbgs4d" style="text-align: left;"><span id="gbgs4dn" style="max-width: 308px; text-align: left;">崔贵林</span><span class="gbmai"></span><span class="gbmab"></span><span class="gbmac"></span></span></a>
+                            <div class="gbm" id="gbd4" aria-owner="gbg4">
                                 <div class="gbmc">
                                     <div id="gbmpdv">
                                         <div id="gbmpiw">
-                                            <a target="_blank" class="gbmpiaa gbp1" onclick="gbar.logger.il(10,{t:146})" href="https://profiles.google.com/?hl=zh-CN&tab=yX"><span id="gbmpid" style="display:none"></span><img id="gbmpi" width="96" height="96" onerror="window.gbar&amp;&amp;gbar.ppe?gbar.ppe():this.loadError=1;" src="./gReader_files/photo.jpg" alt="崔贵林"></a></div><div class="gbpc"><span id="gbmpn" class="gbps" onclick="gbar.logger.il(10,{t:69})">崔贵林</span><span class="gbps2">godisababy@gmail.com</span><div class="gbmlbw"><a target="_blank" id="gb_150" onclick="gbar.logger.il(10,{t:150})" href="https://www.google.com/accounts/ManageAccount" class="gbmlb">帐户</a>–<a target="_blank" onclick="gbar.logger.il(10,{t:149})" href="http://www.google.com/intl/zh-CN/privacy/" class="gbmlb">隐私权</a></div><a target="_blank" role="button" id="gbmplp" onclick="gbar.logger.il(10,{t:146})" href="https://profiles.google.com/?hl=zh-CN&tab=yX" class="gbqfb gbiba gbp1">查看个人资料</a>
+                                            <a target="_blank" class="gbmpiaa gbp1" onclick="gbar.logger.il(10,{t:146})" href="https://profiles.google.com/?hl=zh-CN&tab=yX"><span id="gbmpid" style="display:none"></span><img id="gbmpi" width="96" height="96" onerror="window.gbar&amp;&amp;gbar.ppe?gbar.ppe():this.loadError=1;" src="./gReader_files/photo.jpg" alt="崔贵林"></a>
+                                        </div>
+                                        <div class="gbpc">
+                                            <span id="gbmpn" class="gbps" onclick="gbar.logger.il(10,{t:69})">崔贵林</span>
+                                            <span class="gbps2">godisababy@gmail.com</span>
+                                            <div class="gbmlbw">
+                                                <a target="_blank" id="gb_150" onclick="gbar.logger.il(10,{t:150})" href="https://www.google.com/accounts/ManageAccount" class="gbmlb">帐户</a>–<a target="_blank" onclick="gbar.logger.il(10,{t:149})" href="http://www.google.com/intl/zh-CN/privacy/" class="gbmlb">隐私权</a>
+                                            </div>
+                                            <a target="_blank" role="button" id="gbmplp" onclick="gbar.logger.il(10,{t:146})" href="https://profiles.google.com/?hl=zh-CN&tab=yX" class="gbqfb gbiba gbp1">查看个人资料</a>
                                         </div>
                                     </div>
                                     <div id="gbmps">
                                         <div id="gbmpasb" class="gbsb gbsbis">
                                             <div id="gbmpas" class="gbsbic">
                                                 <div id="gbmpm_0" class="gbmtc gbp0">
-                                                    <a rel="noreferrer" target="_blank" id="gbmpm_0_l" href="http://www.google.com/reader/view/?authuser=0" class="gbmt"><span class="gbmpiaw gbxv"><img class="gbmpia" width="48" height="48" onerror="window.gbar&amp;&amp;gbar.pae?gbar.pae(this):this.loadError=1;" data-asrc="//lh4.googleusercontent.com/-pyixM-AWqmQ/AAAAAAAAAAI/AAAAAAAAAAA/vSJKAvcedsI/s48-c/photo.jpg" alt="崔贵林"></span><span class="gbmpnw"><span class="gbps">崔贵林</span><span class="gbps2">godisababy@gmail.com</span></span></a></div></div><div class="gbsbt" style="opacity: 0;"></div>
+                                                    <a rel="noreferrer" target="_blank" id="gbmpm_0_l" href="http://www.google.com/reader/view/?authuser=0" class="gbmt"><span class="gbmpiaw gbxv"><img class="gbmpia" width="48" height="48" onerror="window.gbar&amp;&amp;gbar.pae?gbar.pae(this):this.loadError=1;" data-asrc="//lh4.googleusercontent.com/-pyixM-AWqmQ/AAAAAAAAAAI/AAAAAAAAAAA/vSJKAvcedsI/s48-c/photo.jpg" alt="崔贵林"></span><span class="gbmpnw"><span class="gbps">崔贵林</span><span class="gbps2">godisababy@gmail.com</span></span></a>
+                                                </div>
+                                            </div>
+                                            <div class="gbsbt" style="opacity: 0;"></div>
                                             <div class="gbsbb" style="opacity: 0;">
                                             </div>
                                         </div>
                                         <div id="gbmppc" class="gbxx gbmtc">
-                                            <a class="gbmt" href="https://plus.google.com/u/0/pages/manage"><span class="gbmppci"></span>您的所有 Google+ 信息页 ›</a></div></div><table id="gbmpal"><tbody><tr><td class="gbmpala"><a target="_blank" role="button" href="https://www.google.com/accounts/AddSession?service=reader&continue=http://www.google.com/reader/view/" class="gbqfbb">添加帐户</a></td><td class="gbmpalb"><a target="_top" role="button" id="gb_71" onclick="gbar.logger.il(9,{l:&#39;o&#39;})" href="https://www.google.com/accounts/Logout?service=reader&continue=http://www.google.com/reader/view/" class="gbqfbb">退出</a></td></tr></tbody></table></div></div></li><noscript>&lt;li class=gbt&gt;&lt;a id=gbg7 href="https://www.google.com/accounts/Logout?service=reader&amp;continue=http://www.google.com/reader/view/" class=gbgt&gt;&lt;span class=gbgs&gt;&lt;span class=gbit&gt;退出&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;</noscript></ol><div id="gbdw"></div></div></div></div><div id="gbx1"></div><div id="gbx3"></div><script>window.gbar&&gbar.elp&&gbar.elp()</script></div>
+                                            <a class="gbmt" href="https://plus.google.com/u/0/pages/manage"><span class="gbmppci"></span>您的所有 Google+ 信息页 ›</a>
+                                        </div>
+                                    </div>
+                                    <table id="gbmpal">
+                                        <tbody>
+                                            <tr>
+                                                <td class="gbmpala">
+                                                    <a target="_blank" role="button" href="https://www.google.com/accounts/AddSession?service=reader&continue=http://www.google.com/reader/view/" class="gbqfbb">添加帐户</a>
+                                                </td>
+                                                <td class="gbmpalb">
+                                                    <a target="_top" role="button" id="gb_71" onclick="gbar.logger.il(9,{l:&#39;o&#39;})" href="https://www.google.com/accounts/Logout?service=reader&continue=http://www.google.com/reader/view/" class="gbqfbb">退出</a>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            </li>
+                            <noscript>&lt;li class=gbt&gt;&lt;a id=gbg7 href="https://www.google.com/accounts/Logout?service=reader&amp;continue=http://www.google.com/reader/view/" class=gbgt&gt;&lt;span class=gbgs&gt;&lt;span class=gbit&gt;退出&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;</noscript>
+                        </ol>
+                        <div id="gbdw"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="gbx1"></div>
+            <div id="gbx3"></div>
+            <script>window.gbar&&gbar.elp&&gbar.elp()</script>
+        </div>
+        -->
         <div class="message-area-container" id="message-area-container">
             <div class="goog-inline-block">
                 <div class="jfk-butterBar" id="message-area"> </div>
@@ -104,7 +182,8 @@
         <div id="top-bar" class=" jfk" style="">
             <a href="http://www.google.com/reader/view/" id="logo-container"><h1 id="logo"><span>Google Reader</span></h1></a>
             <div id="search">
-                <input id="search-input" class="jfk-textinput" type="text" title="&quot;搜索您的供稿&quot;"></div>
+                <input id="search-input" class="jfk-textinput" type="text" title="&quot;搜索您的供稿&quot;">
+            </div>
         </div>
         <script type="text/javascript">if (window.gbar && window.gbar.qfgq && window.gbar.qfgq()) {
             var topBar = document.getElementById('top-bar');
@@ -396,8 +475,6 @@
                             </div>
                             <div id="viewer-page-container">
                                 <div class="viewer-page">
-
-
                                     <div id="home">
                                         <div id="sections-header">
                                             <div class="contents">
@@ -430,6 +507,8 @@
                                         </div>
                                         <div id="sections-holder" style="height: 408.3999938964844px;">
                                             <div id="sections">
+                                                <!-- hide: right section -->
+                                                <!--
                                                 <div id="right-section">
                                                     <div class="overview-section">
                                                         <div class="section" id="recent-activity">
@@ -452,11 +531,24 @@
                                                                     <div class="recent-item">
                                                                         <span class="link overview-item-link" id="tag:google.com,2005:reader/item/234b2cead2e82066">PCLinuxOS 2009.1 发布</span>
                                                                         来源：
-                                                                        <span class="recent-stream-title overview-item-link" id="tag:google.com,2005:reader/item/234b2cead2e82066">LinuxTOY</span></div></div></div></div>
-                                                        <div id="tips"><div class="section-header">技巧和窍门</div>
-                                                            <div id="tips-body"><p class="promo-image-text">通过我们的“发送到”功能，您可以更轻松地将自己喜欢的信息共享到 Blogger、Twitter、Facebook 等。只需转到<a href="http://www.google.com/reader/settings?hl=zh-CN&display=item-links" class="link">设置</a>页面，然后启用要使用的服务即可。</p>
-                                                                <div class="promo-image-container"><a href="http://www.google.com/reader/settings?hl=zh-CN&display=item-links" class="link"><img src="./gReader_files/2062310107-send-to.png" width="220" height="94" alt="发送到屏幕截图"></a></div>
-                                                                <p class="promo-image-text">如果未列出您喜爱的服务，您可以使用网址模板创建自己的“发送到”链接。</p></div></div></div></div>
+                                                                        <span class="recent-stream-title overview-item-link" id="tag:google.com,2005:reader/item/234b2cead2e82066">LinuxTOY</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="tips">
+                                                            <div class="section-header">技巧和窍门</div>
+                                                            <div id="tips-body">
+                                                                <p class="promo-image-text">通过我们的“发送到”功能，您可以更轻松地将自己喜欢的信息共享到 Blogger、Twitter、Facebook 等。只需转到<a href="http://www.google.com/reader/settings?hl=zh-CN&display=item-links" class="link">设置</a>页面，然后启用要使用的服务即可。</p>
+                                                                <div class="promo-image-container">
+                                                                    <a href="http://www.google.com/reader/settings?hl=zh-CN&display=item-links" class="link"><img src="./gReader_files/2062310107-send-to.png" width="220" height="94" alt="发送到屏幕截图"></a>
+                                                                </div>
+                                                                <p class="promo-image-text">如果未列出您喜爱的服务，您可以使用网址模板创建自己的“发送到”链接。</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                -->
                                                 <div id="left-section">
                                                     <div class="overview-section"><div id="overview"><div class="section-header">您的订阅中的新内容</div>
                                                             <div class="overview-segment overview-stream" id="feed/http://feeds.feedburner.com/linuxtoy"><div class="overview-header"><span class="title"><a class="sub-link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Ffeeds.feedburner.com%2Flinuxtoy" id="overview-feed/http://feeds.feedburner.com/linuxtoy" target="_blank">LinuxTOY
