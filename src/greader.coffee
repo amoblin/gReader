@@ -4,14 +4,48 @@ feeds = {}
 showAdd = () ->
     document.getElementById("quick-add-bubble-holder").setAttribute("class", "show")
 
+hideDetail = (obj, item) ->
+    obj.removeClass("expanded")
+    obj.find(".entry-container").remove()
+    obj.find(".entry-actions").remove()
+    obj.click -> showDetail(obj, item)
+
+showDetail = (obj, item) ->
+    obj.addClass("expanded")
+
+    date = item.publishedDate
+    link = item.link
+    title = item.title
+    desc = item.contentSnippet
+    content = item.content
+
+    entry_container = $(sprintf('<div class="entry-container"><div class="entry-main"><div class="entry-date">%s</div><h2 class="entry-title"><a class="entry-title-link" target="_blank" href="%s">%s<div class="entry-title-go-to"></div></a><span class="entry-icons-placeholder"></span></h2><div class="entry-author"><span class="entry-source-title-parent">来源：<a class="entry-source-title" target="_blank" href=""></a></span> </div><div class="entry-debug"></div><div class="entry-annotations"></div><div class="entry-body"><div><div class="item-body"><div>%s</div></div></div></div></div></div>', date, link, title, content))
+    entry_actions = $('<div class="entry-actions"><span class="item-star star link unselectable" title="加注星标"></span><wbr><span class="item-plusone" style="height: 15px; width: 70px; display: inline-block; text-indent: 0px; margin: 0px; padding: 0px; background-color: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; background-position: initial initial; background-repeat: initial initial;"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: absolute; top: -10000px; width: 70px; margin: 0px; border-style: none;" tabindex="0" vspace="0" width="100%" id="I6_1364822093465" name="I6_1364822093465" allowtransparency="true" data-gapiattached="true"></iframe></span><wbr><span class="email"><span class="link unselectable">电子邮件</span></span><wbr><span class="read-state-not-kept-unread read-state link unselectable" title="保持为未读状态">保持为未读状态</span><wbr><span></span><wbr><span class="tag link unselectable"><span class="entry-tagging-action-title">修改标签: </span><ul class="user-tags-list"><li><a href="/reader/view/user%2F-%2Flabel%2FIT.%E6%95%B0%E7%A0%81">IT.数码</a></li></ul></span></div>')
+    obj.append(entry_container)
+    obj.append(entry_actions)
+    obj.click -> hideDetail(obj, item)
+
 showContent = (obj) ->
     v = $(obj).attr("title")
     feed = feeds[v]
-    $("#viewer-header-container").css("display", "block")
-    $("#viewer-entries-container").css("display", "block")
-    $("#viewer-page-container").css("display", "none")
-    div = $('<div class="entry entry-0"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">2013-3-31</div><div class="entry-main"><a class="entry-original" target="_blank" href="http://item.feedsky.com/~feedsky/MacGG/~7240343/727092688/5349783/1/item.html"></a><span class="entry-source-title">Mac GG</span><div class="entry-secondary"><h2 class="entry-title">[Mac]My Alarm Clock 1.5.2 – 『Mac 闹钟工具』</h2><span class="entry-secondary-snippet"> - <span class="snippet">My Alarm Clock 让您最喜爱的iPod音乐伴您每天醒来和入睡,获得您自己的多款专享设计师时钟,了解 [...]</span></span></div></div></div></div>')
-    $("#entries").append(div)
+    i = 0
+    for item in feed.entries
+        date = item.publishedDate
+        link = item.link
+        stitle = feed.title
+        title = item.title
+        desc = item.contentSnippet
+
+        $("#viewer-header-container").css("display", "block")
+        $("#viewer-entries-container").css("display", "block")
+        $("#viewer-page-container").css("display", "none")
+        div = $(sprintf('<div class="entry entry-%s read"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">%s</div><div class="entry-main"><a class="entry-original" target="_blank" href="%s"></a><span class="entry-source-title">%s</span><div class="entry-secondary"><h2 class="entry-title">%s</h2><span class="entry-secondary-snippet"> - <span class="snippet">%s</span></span></div></div></div></div>', i, date, link, stitle, title, desc))
+        i = i + 1
+        a = (obj, args) ->
+            div.click -> showDetail(obj, args)
+        a(div, item)
+
+        $("#entries").append(div)
 
 addFeed = () ->
     v = $("#quickadd").val()
