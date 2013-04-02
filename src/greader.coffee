@@ -123,4 +123,5 @@ document.addEventListener 'DOMContentLoaded', () ->
     $("#lhn-add-subscription").click -> showAdd()
     $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
+    $("#stream-prefs-menu div").click -> $(".goog-menu").css("display", "block")
     init()
