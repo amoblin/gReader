@@ -1,4 +1,8 @@
 chrome.browserAction.onClicked.addListener (tab) ->
+    #chrome.windows.create {
+    #    url:chrome.extension.getURL("index.html"),
+    #    type: "popup"
+    #}
     chrome.tabs.create {
         url:chrome.extension.getURL("index.html")
     }

@@ -1,5 +1,27 @@
 #document.getElementById("lhn-add-subscription").onclick = 
-feeds = {}
+storage = window.localStorage
+
+#storage.setItem("feeds", "{}")
+feeds = JSON.parse(storage.getItem("feeds")) || {}
+storage.setItem("feeds", JSON.stringify(feeds))
+
+generateOverview = () ->
+    item = '<div class="overview-segment overview-stream" id="">
+                                                                <div class="overview-header">
+                                                                    <span class="title">
+                                                                        <a class="sub-link" href="#" id="" target="_blank">LinuxTOY<span class="unread"><span class="unread">(31)</span></span></a>
+                                                                    </span>
+                                                                </div>
+                                                                <img src="./gReader_files/linuxdeepin-12.12-beta-coming.jpg" width="161" height="66" alt="">
+                                                                <div class="overview-metadata" dir="ltr">
+                                                                    <p class="link item-title overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">%s</p>
+                                                                    <p class="item-snippet overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">%s</p>
+                                                                </div>
+                                                                <div class="label">
+                                                                    <p>了解更多  <a class="label-link" id="overview-user/08003626058048695165/label/IT.数码" href="#" target="_blank">%s<span class="unread">(75)</span></a>  的信息</p>
+                                                                </div>
+                                                            </div>'
+
 
 showAdd = () ->
     document.getElementById("quick-add-bubble-holder").setAttribute("class", "show")
@@ -48,19 +70,28 @@ showContent = (obj) ->
         $("#entries").append(div)
 
 addFeed = () ->
-    v = $("#quickadd").val()
+    k = $("#quickadd").val()
     $.ajax({
-        url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(v),
+        url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(k),
         dataType: 'json',
         success: (data) ->
             feed = data.responseData.feed
-            feeds[v] = feed
-            li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(//s2.googleusercontent.com/s2/favicons?domain=blog.sina.com.cn&amp;alt=feed)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', v, feed.title))
-            li.find("a:first").click -> showContent(this)
-            $("#sub-tree-item-0-main ul:first").append(li)
-            document.getElementById("quick-add-bubble-holder").setAttribute("class", "hidden")
+            feeds[k] = feed
+            storage.setItem("feeds", JSON.stringify(feeds))
+            UIAddFeed(feed)
     })
+
+UIAddFeed = (feed) ->
+    li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(//s2.googleusercontent.com/s2/favicons?domain=blog.sina.com.cn&amp;alt=feed)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', feed.feedUrl, feed.title))
+    li.find("a:first").click -> showContent(this)
+    $("#sub-tree-item-0-main ul:first").append(li)
+    document.getElementById("quick-add-bubble-holder").setAttribute("class", "hidden")
+
+init = () ->
+    for k, v of JSON.parse(storage.getItem("feeds"))
+        UIAddFeed(v)
 
 document.addEventListener 'DOMContentLoaded', () ->
     document.getElementById("lhn-add-subscription").addEventListener('click', showAdd)
     document.getElementById("add-feed").addEventListener('click', addFeed)
+    init()
