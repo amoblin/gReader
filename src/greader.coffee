@@ -1,9 +1,32 @@
 #document.getElementById("lhn-add-subscription").onclick = 
-storage = window.localStorage
 
-#storage.setItem("feeds", "{}")
-feeds = JSON.parse(storage.getItem("feeds")) || {}
-storage.setItem("feeds", JSON.stringify(feeds))
+#feeds = JSON.parse(localStorage.getItem("feeds")) || {}
+#isOnline = true
+isOnline = false
+
+feeds = [
+    {
+        "title": "LinuxToy",
+        "type": "rss",
+        "xmlUrl": "http://linuxtoy.org/feed",
+        "htmlUrl": "http://a.com"
+    },
+    {
+        "title": "apple相关",
+        "type": "folder",
+        "item": [{
+            "title": "36氪 | 关注互联网创业",
+            "type": "rss",
+            "xmlUrl": "http://www.36kr.com/feed",
+            "htmlUrl": "http://a.com"
+        },{
+            "title": "Mac GG",
+            "type": "rss",
+            "xmlUrl": "http://feed.feedsky.com/MacGG",
+            "htmlUrl": "http://b.com"
+        }]
+    }
+]
 
 generateOverview = () ->
     item = '<div class="overview-segment overview-stream" id="">
@@ -22,11 +45,18 @@ generateOverview = () ->
                                                                 </div>
                                                             </div>'
 
-generateFolder = () ->
-    folder = '<li class="folder unselectable collapsed unread" id="sub-tree-item-9-main">
+generateFolder = (dict) ->
+    folder = $(sprintf('<li class="folder unselectable collapsed unread" id="sub-tree-item-9-main">
                                             <div class="toggle folder-toggle toggle-d-1"></div>
-                                            <a class="link" href="#"><div class="icon folder-icon icon-d-1" id="sub-tree-item-9-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1 name-unread" id="sub-tree-item-9-name">job</div><div class="unread-count folder-unread-count unread-count-d-1" id="sub-tree-item-9-unread-count">(540)</div><div class="tree-item-action-container"><div id="sub-tree-item-9-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
-                                            <ul>%s</ul></li>'
+                                            <a class="link" href="#"><div class="icon folder-icon icon-d-1" id="sub-tree-item-9-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1 name-unread" id="sub-tree-item-9-name">%s</div><div class="unread-count folder-unread-count unread-count-d-1" id="sub-tree-item-9-unread-count">(540)</div><div class="tree-item-action-container"><div id="sub-tree-item-9-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
+                                            <ul></ul></li>', dict.title))
+    ul = folder.find("ul:first")
+    for item in dict.item
+        ul.append(generateFeed(item.xmlUrl, item.title))
+    folder.find(".folder-toggle").click -> toggle($(this).parent())
+    return folder
+    #feeds[k] = feed
+    #storage.setItem("feeds", JSON.stringify(feeds))
 
 showAdd = () ->
     $("#quick-add-bubble-holder").toggleClass("show")
@@ -55,59 +85,76 @@ showDetail = (obj, item) ->
 
 showContent = (obj) ->
     v = $(obj).attr("title")
-    feed = feeds[v]
-    i = 0
-    $("#entries").find(".entry").remove()
-    for item in feed.entries
-        date = item.publishedDate
-        link = item.link
-        stitle = feed.title
-        title = item.title
-        desc = item.contentSnippet
+    getJsonFeed v, (feed) ->
+        i = 0
+        $("#entries").find(".entry").remove()
+        for item in feed.entries
+            date = item.publishedDate
+            link = item.link
+            stitle = feed.title
+            title = item.title
+            desc = item.contentSnippet
 
-        $("#viewer-header-container").css("display", "block")
-        $("#viewer-entries-container").css("display", "block")
-        $("#viewer-page-container").css("display", "none")
-        div = $(sprintf('<div class="entry entry-%s read"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">%s</div><div class="entry-main"><a class="entry-original" target="_blank" href="%s"></a><span class="entry-source-title">%s</span><div class="entry-secondary"><h2 class="entry-title">%s</h2><span class="entry-secondary-snippet"> - <span class="snippet">%s</span></span></div></div></div></div>', i, date, link, stitle, title, desc))
-        i = i + 1
-        a = (obj, args) ->
-            div.click -> showDetail(obj, args)
-        a(div, item)
+            $("#viewer-header-container").css("display", "block")
+            $("#viewer-entries-container").css("display", "block")
+            $("#viewer-page-container").css("display", "none")
+            div = $(sprintf('<div class="entry entry-%s read"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">%s</div><div class="entry-main"><a class="entry-original" target="_blank" href="%s"></a><span class="entry-source-title">%s</span><div class="entry-secondary"><h2 class="entry-title">%s</h2><span class="entry-secondary-snippet"> - <span class="snippet">%s</span></span></div></div></div></div>', i, date, link, stitle, title, desc))
+            i = i + 1
+            a = (obj, args) ->
+                div.click -> showDetail(obj, args)
+            a(div, item)
 
-        $("#entries").append(div)
+            $("#entries").append(div)
 
 addFeed = () ->
     k = $("#quickadd").val()
-    $.ajax({
-        url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(k),
-        dataType: 'json',
-        success: (data) ->
-            feed = data.responseData.feed
-            feeds[k] = feed
-            storage.setItem("feeds", JSON.stringify(feeds))
+    getJsonFeed k, (feed) ->
+        feeds[k] = feed
+        localStorage.setItem("feeds", JSON.stringify(feeds))
 
-            li = generateFeed(feed)
-            $("#sub-tree-item-0-main ul:first").append(li)
-            $("#quick-add-bubble-holder").toggleClass("show")
-            $("#quick-add-bubble-holder").toggleClass("hidden")
-    })
+        li = generateFeed(feed)
+        $("#sub-tree-item-0-main ul:first").append(li)
+        $("#quick-add-bubble-holder").toggleClass("show")
+        $("#quick-add-bubble-holder").toggleClass("hidden")
 
-generateFeed = (feed) ->
-    li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(images/a.png)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', feed.feedUrl, feed.title))
+getJsonFeed = (url, cb) ->
+    if isOnline
+        $.ajax({
+            url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url),
+            dataType: 'json',
+            success: (data) ->
+                feed = data.responseData.feed
+                cb(feed)
+        })
+    else
+        cb(JSON.parse(localStorage.getItem(url)))
+
+generateFeed = (url, title) ->
+    li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(images/a.png)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', url, title))
     li.find("a:first").click -> showContent(this)
     return li
 
 init = () ->
-    for k, v of JSON.parse(storage.getItem("feeds"))
-        li = generateFeed(v)
-        $("#sub-tree-item-0-main ul:first").append(li)
+    feed_ul = $("#sub-tree-item-0-main ul:first")
+    for item in feeds
+        if item.type == "rss"
+            feed_ul.append(generateFeed(item.xmlUrl, item.title))
+            #getJsonFeed item.xmlUrl, (feed) ->
+            #    feed_ul.append(generateFeed(feed))
+        else
+            feed_ul.append(generateFolder(item))
+
+    #feeds = JSON.parse(localStorage.getItem("feeds")) || {}
+    #for k, v of feeds
+        #feed_ul.append(generateFeed(v))
+        #localStorage.setItem(k, JSON.stringify(v))
 
 toggle = (obj) ->
     obj.toggleClass("collapsed")
     obj.toggleClass("expanded")
 
 document.addEventListener 'DOMContentLoaded', () ->
-    document.getElementById("lhn-add-subscription").addEventListener('click', showAdd)
-    document.getElementById("add-feed").addEventListener('click', addFeed)
+    $("#lhn-add-subscription").click -> showAdd()
+    $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
     init()
