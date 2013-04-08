@@ -1,3 +1,6 @@
 /gReader/js
 *.zip
 Thumbs.db
+
+# Ignore temp bat files in microsoft windows
+foo.bat
