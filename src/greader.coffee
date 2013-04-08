@@ -3,21 +3,22 @@ feeds = JSON.parse(localStorage.getItem("feeds")) || []
 currentFeedURL = ""
 
 generateOverview = () ->
-    item = '<div class="overview-segment overview-stream" id="">
-                                                                <div class="overview-header">
-                                                                    <span class="title">
-                                                                        <a class="sub-link" href="#" id="" target="_blank">LinuxTOY<span class="unread"><span class="unread">(31)</span></span></a>
-                                                                    </span>
-                                                                </div>
-                                                                <img src="./gReader_files/linuxdeepin-12.12-beta-coming.jpg" width="161" height="66" alt="">
-                                                                <div class="overview-metadata" dir="ltr">
-                                                                    <p class="link item-title overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">%s</p>
-                                                                    <p class="item-snippet overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">%s</p>
-                                                                </div>
-                                                                <div class="label">
-                                                                    <p>了解更多  <a class="label-link" id="overview-user/08003626058048695165/label/IT.数码" href="#" target="_blank">%s<span class="unread">(75)</span></a>  的信息</p>
-                                                                </div>
-                                                            </div>'
+  item = '
+    <div class="overview-segment overview-stream" id="">
+      <div class="overview-header">
+        <span class="title">
+          <a class="sub-link" href="#" id="" target="_blank">LinuxTOY<span class="unread"><span class="unread">(31)</span></span></a>
+        </span>
+      </div>
+      <img src="./gReader_files/linuxdeepin-12.12-beta-coming.jpg" width="161" height="66" alt="">
+      <div class="overview-metadata" dir="ltr">
+        <p class="link item-title overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">%s</p>
+        <p class="item-snippet overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">%s</p>
+      </div>
+      <div class="label">
+        <p>了解更多  <a class="label-link" id="overview-user/08003626058048695165/label/IT.数码" href="#" target="_blank">%s<span class="unread">(75)</span></a>  的信息</p>
+      </div>
+    </div>'
 
 generateFolder = (dict) ->
     folder = $(sprintf('<li class="folder unselectable collapsed unread" id="sub-tree-item-9-main">
@@ -108,7 +109,7 @@ getJsonFeed = (url, cb) ->
     })
 
 generateFeed = (url, title) ->
-    li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(images/a.png)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', url, title))
+    li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(img/a.png)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', url, title))
     li.find("a:first").click -> showContent(url)
     return li
 
