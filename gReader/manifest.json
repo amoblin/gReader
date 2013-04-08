@@ -15,15 +15,15 @@
         "tabs", "notifications", "http://*/*"
     ],
     "browser_action": {
-        "default_icon": "images/greader-32.png",
+        "default_icon": "img/greader-32.png",
         "default_title": "Marboo Note"
     },
     "icons": {
-        "16": "images/greader-32.png",
-        "48": "images/greader-64.png",
-        "128": "images/greader-64.png"
+        "16": "img/greader-32.png",
+        "48": "img/greader-64.png",
+        "128": "img/greader-64.png"
     },
-    "web_accessible_resources": ["images/marboo-64.png"],
+    "web_accessible_resources": ["img/marboo-64.png"],
     "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'",
     "update_url": "http://marboo.biz/crx/update.xml"
 }
