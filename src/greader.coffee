@@ -100,7 +100,7 @@ addFeed = () ->
 
 getJsonFeed = (url, cb) ->
     $.ajax({
-        url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=10&callback=?&q=' + encodeURIComponent(url),
+        url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=50&callback=?&q=' + encodeURIComponent(url),
         dataType: 'json',
         success: (data) ->
             feed = data.responseData.feed
