@@ -1,5 +1,6 @@
 
 feeds = JSON.parse(localStorage.getItem("feeds")) || []
+currentFeedURL = ""
 
 generateOverview = () ->
     item = '<div class="overview-segment overview-stream" id="">
@@ -56,13 +57,15 @@ showDetail = (obj, item) ->
     obj.append(entry_actions)
     obj.click -> hideDetail(obj, item)
 
-showContent = (obj) ->
-    v = $(obj).attr("title")
-    feed = JSON.parse(localStorage.getItem(v))
+showContent = (feedURL) ->
+    feed = JSON.parse(localStorage.getItem(feedURL))
     $("#entries").find(".entry").remove()
     i = 0
     for item in feed.entries
-        date = item.publishedDate
+
+        dt = new Date(item.publishedDate)
+        date = dt.toLocaleTimeString()
+
         link = item.link
         stitle = feed.title
         title = item.title
@@ -78,6 +81,8 @@ showContent = (obj) ->
         a(div, item)
 
         $("#entries").append(div)
+    $("#stream-prefs-menu").click -> showMenu(feedURL)
+    currentFeedURL = feedURL
 
 addFeed = () ->
     k = $("#quickadd").val()
@@ -104,7 +109,7 @@ getJsonFeed = (url, cb) ->
 
 generateFeed = (url, title) ->
     li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(images/a.png)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', url, title))
-    li.find("a:first").click -> showContent(this)
+    li.find("a:first").click -> showContent(url)
     return li
 
 init = () ->
@@ -119,9 +124,86 @@ toggle = (obj) ->
     obj.toggleClass("collapsed")
     obj.toggleClass("expanded")
 
+showMenu = (url) ->
+    menu = $('<div class="goog-menu goog-menu-vertical subscription-folders-menu" style="-webkit-user-select: none; max-height: 291.5999984741211px; visibility: visible; left: 565.4000244140625px; top: 45.4000015258789px; display: block;" role="menu" aria-haspopup="true" tabindex="-1" aria-activedescendant="">
+            <!--
+            <div class="goog-menuitem goog-option-selected goog-option" role="menuitem" style="-webkit-user-select: none;" id=":bl">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox">
+                </div>最新条目在前</div>
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":bm">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox">
+                    </div>
+                    最旧条目在前</div>
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":bn">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox">
+                    </div>
+                    神奇排序</div>
+            </div>
+            <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":bo">
+            </div>
+            -->
+            <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":bp">
+                <div class="goog-menuitem-content"> 取消订阅</div>
+            </div>
+            <!--
+            <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":bq">
+                <div class="goog-menuitem-content"> 重命名订阅...</div>
+            </div>
+            -->
+            <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":br">
+            </div>
+            <!--
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":bs">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"></div>
+                    翻译为我使用的语言
+                </div>
+            </div>
+            <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":bt"></div>
+            <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":bu">
+                <div class="goog-menuitem-content"> 查看明细和统计信息</div>
+            </div>
+            <div class="goog-menuitem goog-submenu" role="menuitem" style="-webkit-user-select: none;" aria-haspopup="true" id=":bv">
+                <div class="goog-menuitem-content">
+                    更多与此类似的供稿...<span class="goog-submenu-arrow">►</span>
+                </div>
+            </div>
+            -->
+            <div class="goog-menuitem goog-menuitem-disabled" role="menuitem" style="-webkit-user-select: none;" id=":bw">
+                <div class="goog-menuitem-content">更改文件夹...</div>
+            </div>
+        </div>')
+    dirMenu = $(sprintf('<div class="goog-menuitem goog-option-selected goog-option" role="menuitem" style="-webkit-user-select: none;" id=":bx">
+                <div class="goog-menuitem-content"> <div class="goog-menuitem-checkbox"></div>%s</div></div>', "abc"))
+    menu.append(dirMenu)
+    menu.append($('<div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":cc">
+                <div class="goog-menuitem-content">新文件夹...</div>
+            </div>'))
+
+    $("body").append(menu)
+    $("#stream-prefs-menu").unbind("click")
+    $("#stream-prefs-menu").click -> toggleMenu(menu)
+
+toggleMenu = (menu) ->
+    if menu.css("display") == "block"
+        menu.css("display", "none")
+    else
+        menu.css("display", "block")
+
+refreshFeed = () ->
+    getJsonFeed currentFeedURL, (feed) ->
+        localStorage.setItem(currentFeedURL, JSON.stringify(feed))
+        showContent(currentFeedURL)
+
 document.addEventListener 'DOMContentLoaded', () ->
     $("#lhn-add-subscription").click -> showAdd()
     $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
-    $("#stream-prefs-menu div").click -> $(".goog-menu").css("display", "block")
+    $("#viewer-refresh").click -> refreshFeed()
+
     init()
