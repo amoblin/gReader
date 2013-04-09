@@ -27,7 +27,7 @@ generateFolder = (dict) ->
                                             <ul></ul></li>', dict.title))
     ul = folder.find("ul:first")
     for item in dict.item
-        ul.append(generateFeed(item.xmlUrl, item.title))
+        ul.append(generateFeed(item))
     folder.find(".folder-toggle").click -> toggle($(this).parent())
     return folder
     #feeds[k] = feed
@@ -86,17 +86,22 @@ showContent = (feedURL) ->
     currentFeedURL = feedURL
 
 addFeed = () ->
-    k = $("#quickadd").val()
-    getJsonFeed k, (feed) ->
-        localStorage.setItem(k, JSON.stringify(feed))
+    url = $("#quickadd").val()
+    getJsonFeed url, (feed) ->
+        localStorage.setItem(url, JSON.stringify(feed))
 
-        li = generateFeed(feed.feedUrl, feed.title)
+        f = {
+            "title":feed.title,
+            "type":"rss",
+            "feedUrl":feed.feedUrl,
+            "favicon": sprintf("%s/favicon.ico", feed.link)
+        }
+        li = generateFeed(f)
         $("#sub-tree-item-0-main ul:first").append(li)
         $("#quick-add-bubble-holder").toggleClass("show")
         $("#quick-add-bubble-holder").toggleClass("hidden")
 
-        feeds.push({"title":feed.title, "type":"rss", "xmlUrl":feed.feedUrl})
-        #feeds = JSON.parse(localStorage.getItem("feeds")) || {}
+        feeds.push(f)
         localStorage.setItem("feeds", JSON.stringify(feeds))
 
 getJsonFeed = (url, cb) ->
@@ -108,16 +113,16 @@ getJsonFeed = (url, cb) ->
             cb(feed)
     })
 
-generateFeed = (url, title) ->
-    li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(img/a.png)" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', url, title))
-    li.find("a:first").click -> showContent(url)
+generateFeed = (feed) ->
+    li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(%s); background-size:16px 16px" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', feed.feedUrl, feed.favicon, feed.title))
+    li.find("a:first").click -> showContent(feed.feedUrl)
     return li
 
 init = () ->
     feed_ul = $("#sub-tree-item-0-main ul:first")
     for item in feeds
         if item.type == "rss"
-            feed_ul.append(generateFeed(item.xmlUrl, item.title))
+            feed_ul.append(generateFeed(item))
         else
             feed_ul.append(generateFolder(item))
 
@@ -201,20 +206,21 @@ refreshFeed = () ->
         localStorage.setItem(currentFeedURL, JSON.stringify(feed))
         showContent(currentFeedURL)
 
-jQuery ->
+$ ->
     $("#lhn-add-subscription").click -> showAdd()
     $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
     $("#viewer-refresh").click -> refreshFeed()
 
-    init()
-
     # Auto fix height
     auto_height = () ->
-      $section = $('#scrollable-sections') 
+      $section = $('#scrollable-sections')
       $section.css height: $(window).height() - $section.offset().top - 10
 
       $viewer  = $('#viewer-entries-container')
       $viewer.css height: $(window).height() - $viewer.offset().top - 10
 
+    auto_height()
     setInterval auto_height, 200
+
+    init()
