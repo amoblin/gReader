@@ -87,6 +87,9 @@ showContent = (feedURL) ->
 
 addFeed = () ->
     url = $("#quickadd").val()
+    if url.indexOf("http://") != 0
+        alert "invalid feed url"
+        return
     getJsonFeed url, (feed) ->
         localStorage.setItem(url, JSON.stringify(feed))
 
@@ -153,16 +156,11 @@ showMenu = (url) ->
             <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":bo">
             </div>
             -->
-            <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":bp">
-                <div class="goog-menuitem-content"> 取消订阅</div>
-            </div>
             <!--
             <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":bq">
                 <div class="goog-menuitem-content"> 重命名订阅...</div>
             </div>
             -->
-            <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":br">
-            </div>
             <!--
             <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":bs">
                 <div class="goog-menuitem-content">
@@ -180,10 +178,14 @@ showMenu = (url) ->
                 </div>
             </div>
             -->
-            <div class="goog-menuitem goog-menuitem-disabled" role="menuitem" style="-webkit-user-select: none;" id=":bw">
-                <div class="goog-menuitem-content">更改文件夹...</div>
-            </div>
         </div>')
+    dirMenu = $('<div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":bp">
+                <div class="goog-menuitem-content"> 取消订阅</div>
+            </div>')
+    dirMenu.click -> removeFeed()
+    menu.append(dirMenu)
+    menu.append($('<div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":br"></div>'))
+    menu.append($('<div class="goog-menuitem goog-menuitem-disabled" role="menuitem" style="-webkit-user-select: none;" id=":bw"><div class="goog-menuitem-content">更改文件夹...</div></div>'))
     dirMenu = $(sprintf('<div class="goog-menuitem goog-option-selected goog-option" role="menuitem" style="-webkit-user-select: none;" id=":bx">
                 <div class="goog-menuitem-content"> <div class="goog-menuitem-checkbox"></div>%s</div></div>', "abc"))
     menu.append(dirMenu)
@@ -194,6 +196,15 @@ showMenu = (url) ->
     $("body").append(menu)
     $("#stream-prefs-menu").unbind("click")
     $("#stream-prefs-menu").click -> toggleMenu(menu)
+
+removeFeed = () ->
+    for feed in feeds
+        if feed.feedUrl == currentFeedURL
+            feeds.splice(feeds.indexOf(feed), 1)
+            localStorage.setItem("feeds", JSON.stringify(feeds))
+            $(sprintf("#sub-tree-item-0-main ul:first li a[title='%s']", currentFeedURL)).parent().remove()
+            $("#stream-prefs-menu").click()
+            return
 
 toggleMenu = (menu) ->
     if menu.css("display") == "block"
