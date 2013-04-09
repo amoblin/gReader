@@ -37,15 +37,19 @@ showAdd = () ->
     $("#quick-add-bubble-holder").toggleClass("show")
     $("#quick-add-bubble-holder").toggleClass("hidden")
 
-hideDetail = (obj, item) ->
-    obj.removeClass("expanded")
-    obj.find(".entry-container").remove()
-    obj.find(".entry-actions").remove()
-    obj.find("div:first").unbind("click")
-    obj.find("div:first").click -> showDetail(obj, item)
-
 showDetail = (obj, item) ->
-    obj.addClass("expanded")
+    obj.toggleClass("expanded")
+
+    if obj.attr("id") != "current-entry"
+        if $("#current-entry").hasClass("expanded")
+            $("#current-entry").find("div:first").click()
+        $("#current-entry").attr("id", "")
+        obj.attr("id", "current-entry")
+
+    if obj.find(".entry-container").length > 0
+        obj.find(".entry-container").remove()
+        obj.find(".entry-actions").remove()
+        return
 
     date = item.publishedDate
     link = item.link
@@ -57,8 +61,6 @@ showDetail = (obj, item) ->
     entry_actions = $('<div class="entry-actions"><span class="item-star star link unselectable" title="加注星标"></span><wbr><span class="item-plusone" style="height: 15px; width: 70px; display: inline-block; text-indent: 0px; margin: 0px; padding: 0px; background-color: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; background-position: initial initial; background-repeat: initial initial;"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: absolute; top: -10000px; width: 70px; margin: 0px; border-style: none;" tabindex="0" vspace="0" width="100%" id="I6_1364822093465" name="I6_1364822093465" allowtransparency="true" data-gapiattached="true"></iframe></span><wbr><span class="email"><span class="link unselectable">电子邮件</span></span><wbr><span class="read-state-not-kept-unread read-state link unselectable" title="保持为未读状态">保持为未读状态</span><wbr><span></span><wbr><span class="tag link unselectable"><span class="entry-tagging-action-title">修改标签: </span><ul class="user-tags-list"><li><a href="/reader/view/user%2F-%2Flabel%2FIT.%E6%95%B0%E7%A0%81">IT.数码</a></li></ul></span></div>')
     obj.append(entry_container)
     obj.append(entry_actions)
-    obj.find("div:first").unbind("click")
-    obj.find("div:first").click -> hideDetail(obj, item)
 
 showContent = (feedUrl) ->
     feed = JSON.parse(localStorage.getItem(feedUrl))
@@ -261,6 +263,9 @@ $ ->
     $(".folder-toggle").click -> toggle($(this).parent())
     $("#viewer-refresh").click -> refreshFeed(currentFeedUrl)
     $('#opml-file').change -> handleFileSelect(event)
+    $("#lhn-selectors-minimize").click -> $("#lhn-selectors").toggleClass("section-minimized")
+    $("#lhn-recommendations-minimize").click -> $("#lhn-recommendations").toggleClass("section-minimized")
+    $("#lhn-subscriptions-minimize").click -> $("#lhn-subscriptions").toggleClass("section-minimized")
 
     # Auto fix height
     auto_height = () ->
