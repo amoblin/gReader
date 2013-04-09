@@ -1,7 +1,5 @@
 default:
-	coffee -b -o gReader/js -c src/greader.coffee
-	coffee -b -o gReader/js -c src/background.coffee
-	coffee -b -o gReader/js -c src/content.coffee
+	coffee -b -o gReader/js -c src
 
 zip:
 	rm -f gReader.zip

@@ -210,11 +210,11 @@ jQuery ->
     init()
 
     # Auto fix height
-    auto_height = () ->
-      $section = $('#scrollable-sections') 
-      $section.css height: $(window).height() - $section.offset().top - 10
-
-      $viewer  = $('#viewer-entries-container')
-      $viewer.css height: $(window).height() - $viewer.offset().top - 10
-
-    setInterval auto_height, 200
+#    auto_height = () ->
+#      $section = $('#scrollable-sections')
+#      $section.css height: $(window).height() - $section.offset().top - 10
+#
+#      $viewer  = $('#viewer-entries-container')
+#      $viewer.css height: $(window).height() - $viewer.offset().top - 10
+#
+#    setInterval auto_height, 200
