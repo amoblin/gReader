@@ -41,7 +41,8 @@ hideDetail = (obj, item) ->
     obj.removeClass("expanded")
     obj.find(".entry-container").remove()
     obj.find(".entry-actions").remove()
-    obj.click -> showDetail(obj, item)
+    obj.find("div:first").unbind("click")
+    obj.find("div:first").click -> showDetail(obj, item)
 
 showDetail = (obj, item) ->
     obj.addClass("expanded")
@@ -56,7 +57,8 @@ showDetail = (obj, item) ->
     entry_actions = $('<div class="entry-actions"><span class="item-star star link unselectable" title="加注星标"></span><wbr><span class="item-plusone" style="height: 15px; width: 70px; display: inline-block; text-indent: 0px; margin: 0px; padding: 0px; background-color: transparent; border-style: none; float: none; line-height: normal; font-size: 1px; vertical-align: baseline; background-position: initial initial; background-repeat: initial initial;"><iframe frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" style="position: absolute; top: -10000px; width: 70px; margin: 0px; border-style: none;" tabindex="0" vspace="0" width="100%" id="I6_1364822093465" name="I6_1364822093465" allowtransparency="true" data-gapiattached="true"></iframe></span><wbr><span class="email"><span class="link unselectable">电子邮件</span></span><wbr><span class="read-state-not-kept-unread read-state link unselectable" title="保持为未读状态">保持为未读状态</span><wbr><span></span><wbr><span class="tag link unselectable"><span class="entry-tagging-action-title">修改标签: </span><ul class="user-tags-list"><li><a href="/reader/view/user%2F-%2Flabel%2FIT.%E6%95%B0%E7%A0%81">IT.数码</a></li></ul></span></div>')
     obj.append(entry_container)
     obj.append(entry_actions)
-    obj.click -> hideDetail(obj, item)
+    obj.find("div:first").unbind("click")
+    obj.find("div:first").click -> hideDetail(obj, item)
 
 showContent = (feedURL) ->
     feed = JSON.parse(localStorage.getItem(feedURL))
@@ -78,7 +80,7 @@ showContent = (feedURL) ->
         div = $(sprintf('<div class="entry entry-%s read"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">%s</div><div class="entry-main"><a class="entry-original" target="_blank" href="%s"></a><span class="entry-source-title">%s</span><div class="entry-secondary"><h2 class="entry-title">%s</h2><span class="entry-secondary-snippet"> - <span class="snippet">%s</span></span></div></div></div></div>', i, date, link, stitle, title, desc))
         i += 1
         a = (obj, args) ->
-            div.click -> showDetail(obj, args)
+            div.find("div:first").click -> showDetail(obj, args)
         a(div, item)
 
         $("#entries").append(div)
@@ -202,7 +204,7 @@ removeFeed = () ->
         if feed.feedUrl == currentFeedURL
             feeds.splice(feeds.indexOf(feed), 1)
             localStorage.setItem("feeds", JSON.stringify(feeds))
-            $(sprintf("#sub-tree-item-0-main ul:first li a[title='%s']", currentFeedURL)).parent().remove()
+            $("#sub-tree-item-0-main ul:first li a[title='#{currentFeedURL}']").parent().remove()
             $("#stream-prefs-menu").click()
             return
 
