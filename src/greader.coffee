@@ -65,6 +65,9 @@ showDetail = (obj, item) ->
 showContent = (feedUrl) ->
     feed = JSON.parse(localStorage.getItem(feedUrl))
     $("#entries").find(".entry").remove()
+    $("#title-and-status-holder").css("display", "block")
+    $("#chrome-title").html("#{feed.title} »")
+    $("#chrome-view-links").css("display", "block")
     i = 0
     for item in feed.entries
         dt = new Date(item.publishedDate)
