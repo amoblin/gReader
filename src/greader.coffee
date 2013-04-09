@@ -1,6 +1,6 @@
 
 feeds = JSON.parse(localStorage.getItem("feeds")) || []
-currentFeedURL = ""
+currentFeedUrl = ""
 
 generateOverview = () ->
   item = '
@@ -60,12 +60,11 @@ showDetail = (obj, item) ->
     obj.find("div:first").unbind("click")
     obj.find("div:first").click -> hideDetail(obj, item)
 
-showContent = (feedURL) ->
-    feed = JSON.parse(localStorage.getItem(feedURL))
+showContent = (feedUrl) ->
+    feed = JSON.parse(localStorage.getItem(feedUrl))
     $("#entries").find(".entry").remove()
     i = 0
     for item in feed.entries
-
         dt = new Date(item.publishedDate)
         date = dt.toLocaleTimeString()
 
@@ -84,8 +83,8 @@ showContent = (feedURL) ->
         a(div, item)
 
         $("#entries").append(div)
-    $("#stream-prefs-menu").click -> showMenu(feedURL)
-    currentFeedURL = feedURL
+    $("#stream-prefs-menu").click -> showMenu(feedUrl)
+    currentFeedUrl = feedUrl
 
 addFeed = () ->
     url = $("#quickadd").val()
@@ -93,6 +92,9 @@ addFeed = () ->
         alert "invalid feed url"
         return
     getJsonFeed url, (feed) ->
+        $("#quick-add-bubble-holder").toggleClass("show")
+        $("#quick-add-bubble-holder").toggleClass("hidden")
+
         localStorage.setItem(url, JSON.stringify(feed))
 
         f = {
@@ -101,15 +103,19 @@ addFeed = () ->
             "feedUrl":feed.feedUrl,
             "favicon": sprintf("%s/favicon.ico", feed.link)
         }
+
         li = generateFeed(f)
         $("#sub-tree-item-0-main ul:first").append(li)
-        $("#quick-add-bubble-holder").toggleClass("show")
-        $("#quick-add-bubble-holder").toggleClass("hidden")
 
         feeds.push(f)
         localStorage.setItem("feeds", JSON.stringify(feeds))
 
 getJsonFeed = (url, cb) ->
+    #jQuery.getFeed({
+    #    url: url,
+    #    success: (feed) ->
+    #        alert(feed.title)
+    #})
     $.ajax({
         url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=50&callback=?&q=' + encodeURIComponent(url),
         dataType: 'json',
@@ -120,7 +126,11 @@ getJsonFeed = (url, cb) ->
 
 generateFeed = (feed) ->
     li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(%s); background-size:16px 16px" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', feed.feedUrl, feed.favicon, feed.title))
-    li.find("a:first").click -> showContent(feed.feedUrl)
+    li.find("a:first").click ->
+        if localStorage.getItem(feed.feedUrl) == null
+            refreshFeed(feed.feedUrl)
+        else
+            showContent(feed.feedUrl)
     return li
 
 init = () ->
@@ -201,10 +211,10 @@ showMenu = (url) ->
 
 removeFeed = () ->
     for feed in feeds
-        if feed.feedUrl == currentFeedURL
+        if feed.feedUrl == currentFeedUrl
             feeds.splice(feeds.indexOf(feed), 1)
             localStorage.setItem("feeds", JSON.stringify(feeds))
-            $("#sub-tree-item-0-main ul:first li a[title='#{currentFeedURL}']").parent().remove()
+            $("#sub-tree-item-0-main ul:first li a[title='#{currentFeedUrl}']").parent().remove()
             $("#stream-prefs-menu").click()
             return
 
@@ -214,16 +224,43 @@ toggleMenu = (menu) ->
     else
         menu.css("display", "block")
 
-refreshFeed = () ->
-    getJsonFeed currentFeedURL, (feed) ->
-        localStorage.setItem(currentFeedURL, JSON.stringify(feed))
-        showContent(currentFeedURL)
+refreshFeed = (feedUrl) ->
+    getJsonFeed feedUrl, (feed) ->
+        localStorage.setItem(feedUrl, JSON.stringify(feed))
+        showContent(feedUrl)
+
+handleFileSelect = (evt) ->
+    file = evt.target.files[0]
+    reader = new FileReader()
+
+    reader.onload =  (oFREvent) ->
+        opml = $(oFREvent.target.result)
+        for outline_str in opml.find("outline")
+            outline = $(outline_str)
+            if outline.attr("type") == "rss"
+                url = outline.attr("xmlUrl")
+                #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
+                f = {
+                    "title": outline.attr("title"),
+                    "type": "rss",
+                    "feedUrl": url,
+                    "favicon": "#{outline.attr('htmlUrl')}/favicon.ico"
+                }
+
+                li = generateFeed(f)
+                $("#sub-tree-item-0-main ul:first").append(li)
+
+                feeds.push(f)
+                localStorage.setItem("feeds", JSON.stringify(feeds))
+
+    reader.readAsText(file)
 
 $ ->
     $("#lhn-add-subscription").click -> showAdd()
     $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
-    $("#viewer-refresh").click -> refreshFeed()
+    $("#viewer-refresh").click -> refreshFeed(currentFeedUrl)
+    $('#opml-file').change -> handleFileSelect(event)
 
     # Auto fix height
     auto_height = () ->
