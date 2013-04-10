@@ -93,7 +93,10 @@ showContent = (feedUrl) ->
         i += 1
         a = (obj, args) ->
             div.find(".collapsed").click -> showDetail(obj, args)
-            div.find("div.entry-icons").click -> toggleStar(obj, args)
+            div.find("div.entry-icons").click (e) ->
+              toggleStar(obj, args)
+              e.stopPropagation()
+
         a(div, item)
 
         $("#entries").append(div)
