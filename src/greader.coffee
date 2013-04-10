@@ -114,11 +114,12 @@ addFeed = () ->
         $("#quick-add-bubble-holder").toggleClass("hidden")
 
         localStorage.setItem(url, JSON.stringify(feed))
-        li = generateFeed
+        f =
             title:   feed.title,
             type:    "rss",
             feedUrl: feed.feedUrl,
             favicon: "chrome://favicon/#{feed.link}"
+        li = generateFeed(f)
         $("#sub-tree-item-0-main ul:first").append(li)
 
         feeds.push(f)
