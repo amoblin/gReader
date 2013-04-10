@@ -92,7 +92,7 @@ showContent = (feedUrl) ->
         div = $(sprintf('<div class="entry entry-%s read"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">%s</div><div class="entry-main"><a class="entry-original" target="_blank" href="%s"></a><span class="entry-source-title">%s</span><div class="entry-secondary"><h2 class="entry-title">%s</h2><span class="entry-secondary-snippet"> - <span class="snippet">%s</span></span></div></div></div></div>', i, date, link, stitle, title, desc))
         i += 1
         a = (obj, args) ->
-            div.find("div.entry-main").click -> showDetail(obj, args)
+            div.find(".collapsed").click -> showDetail(obj, args)
             div.find("div.entry-icons").click -> toggleStar(obj, args)
         a(div, item)
 
