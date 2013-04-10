@@ -225,6 +225,7 @@ showMenu = (url) ->
     $("#stream-prefs-menu").click -> toggleMenu(menu)
 
 removeFeed = () ->
+    localStorage.removeItem(currentFeedUrl)
     for feed in feeds
         if feed.feedUrl == currentFeedUrl
             feeds.splice(feeds.indexOf(feed), 1)
