@@ -74,7 +74,7 @@ showContent = (feedUrl) ->
     feed = JSON.parse(localStorage.getItem(feedUrl))
     $("#entries").find(".entry").remove()
     $("#title-and-status-holder").css("display", "block")
-    $("#chrome-title").html("#{feed.title} »")
+    $("#chrome-title").html(sprintf('<a target="_blank" href="%s">%s<span class="chevron">»</span></a>', feed.link, feed.title))
     $("#chrome-view-links").css("display", "block")
     i = 0
     for item in feed.entries
@@ -118,7 +118,7 @@ addFeed = () ->
             title:   feed.title,
             type:    "rss",
             feedUrl: feed.feedUrl,
-            favicon: "chrome://favicon/#{feed.link}"
+            favicon: getFavicon(feed.link)
         li = generateFeed(f)
         $("#sub-tree-item-0-main ul:first").append(li)
 
@@ -258,9 +258,9 @@ importFromOpml = (evt) ->
                 title: outline.attr("title"),
                 type: outline.attr("type") || "folder"
                 feedUrl: outline.attr("xmlUrl"),
-                favicon: "chrome://favicon/#{outline.attr("htmlUrl")}"
 
             if outline.attr("type") == "rss"
+                f.favicon = getFavicon(outline.attr("htmlUrl"))
                 #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
                 li = generateFeed(f)
             else
@@ -271,7 +271,7 @@ importFromOpml = (evt) ->
                         title: sub_outline.attr("title"),
                         type: sub_outline.attr("type") || "folder"
                         feedUrl: sub_outline.attr("xmlUrl"),
-                        favicon: "chrome://favicon/#{sub_outline.attr("htmlUrl")}"
+                        favicon: getFavicon(sub_outline.attr("htmlUrl"))
 
                     f.item.push(sub_f)
                 li = generateFolder(f)
@@ -283,9 +283,9 @@ importFromOpml = (evt) ->
 
     reader.readAsText(file)
 
-getFavicon = (url, cb) ->
-    faviconUrl = "#{url}/favicon.ico"
-    cb(faviconUrl)
+getFavicon = (url) -> "chrome://favicon/http://#{url.split("/")[2]}"
+    #faviconUrl = "#{url}/favicon.ico"
+    #cb(faviconUrl)
     #reader = new FileReader()
     #reader.onload = (oFREvent) ->
     #    imgUrl = oFREvent.target.result
