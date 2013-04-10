@@ -34,8 +34,16 @@ generateFolder = (dict) ->
     #storage.setItem("feeds", JSON.stringify(feeds))
 
 showAdd = () ->
-    $("#quick-add-bubble-holder").toggleClass("show")
-    $("#quick-add-bubble-holder").toggleClass("hidden")
+    btnOffset = $(@).offset()
+    style =
+      top: btnOffset.top + $(@).height()
+      left: btnOffset.left
+    $("#quick-add-bubble-holder").css(style).show()
+    $('#quickadd').focus()
+
+hideAdd = () ->
+    $("#quick-add-bubble-holder").hide()
+
 
 showDetail = (obj, item) ->
     obj.toggleClass("expanded")
@@ -261,7 +269,10 @@ handleFileSelect = (evt) ->
     reader.readAsText(file)
 
 $ ->
-    $("#lhn-add-subscription").click -> showAdd()
+    # Event bindding for quick add
+    $("#lhn-add-subscription").click showAdd
+    $('#quick-add-close').click hideAdd
+
     $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
     $("#viewer-refresh").click -> refreshFeed(currentFeedUrl)
