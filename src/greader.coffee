@@ -256,19 +256,17 @@ handleFileSelect = (evt) ->
                 url = outline.attr("xmlUrl")
                 #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
 
-                getFavicon outline.attr('htmlUrl'), (imgUrl) ->
-                    f = {
-                        "title": outline.attr("title"),
-                        "type": "rss",
-                        "feedUrl": url,
-                        "favicon": imgUrl
-                    }
+                f =
+                    title: outline.attr("title"),
+                    type: "rss",
+                    feedUrl: url,
+                    favicon: "chrome://favicon/#{outline.attr("htmlUrl")}"
 
-                    li = generateFeed(f)
-                    $("#sub-tree-item-0-main ul:first").append(li)
+                li = generateFeed(f)
+                $("#sub-tree-item-0-main ul:first").append(li)
 
-                    feeds.push(f)
-                    localStorage.setItem("feeds", JSON.stringify(feeds))
+                feeds.push(f)
+                localStorage.setItem("feeds", JSON.stringify(feeds))
 
     reader.readAsText(file)
 
