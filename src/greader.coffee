@@ -38,11 +38,11 @@ showAdd = () ->
     style =
       top: btnOffset.top + $(@).height()
       left: btnOffset.left
-    $("#quick-add-bubble-holder").css(style).show()
-    $('#quickadd').focus()
+    $("#quick-add-bubble-holder").css(style).removeClass('hidden')
+    $('#quickadd').val('').focus()
 
 hideAdd = () ->
-    $("#quick-add-bubble-holder").hide()
+    $("#quick-add-bubble-holder").addClass('hidden')
 
 
 showDetail = (obj, item) ->
@@ -103,6 +103,10 @@ addFeed = () ->
     url = $("#quickadd").val()
     if url.indexOf("http://") != 0
         alert "invalid feed url"
+        return
+    if localStorage.getItem(url)
+        # TODO: Use google style flash messages instead of alert
+        alert "You have subscribed to #{url}"
         return
     getJsonFeed url, (feed) ->
         $("#quick-add-bubble-holder").toggleClass("show")
@@ -270,8 +274,8 @@ handleFileSelect = (evt) ->
 
 $ ->
     # Event bindding for quick add
-    $("#lhn-add-subscription").click showAdd
-    $('#quick-add-close').click hideAdd
+    $("#lhn-add-subscription").on 'click', showAdd
+    $('#quick-add-close').on 'click', hideAdd
 
     $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
