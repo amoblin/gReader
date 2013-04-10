@@ -33,17 +33,17 @@ generateFolder = (dict) ->
     #feeds[k] = feed
     #storage.setItem("feeds", JSON.stringify(feeds))
 
-showAdd = () ->
+toggleAddBox = () ->
     btnOffset = $(@).offset()
     style =
       top: btnOffset.top + $(@).height()
       left: btnOffset.left
-    $("#quick-add-bubble-holder").css(style).removeClass('hidden')
+    $("#quick-add-bubble-holder").css(style).toggleClass('hidden')
     $('#quickadd').val('').focus()
 
-hideAdd = () ->
-    $("#quick-add-bubble-holder").addClass('hidden')
-
+toggleStar = (obj, item) ->
+    obj.find(".entry-icons div").toggleClass("item-star")
+    obj.find(".entry-icons div").toggleClass("item-star-active")
 
 showDetail = (obj, item) ->
     obj.toggleClass("expanded")
@@ -92,7 +92,8 @@ showContent = (feedUrl) ->
         div = $(sprintf('<div class="entry entry-%s read"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">%s</div><div class="entry-main"><a class="entry-original" target="_blank" href="%s"></a><span class="entry-source-title">%s</span><div class="entry-secondary"><h2 class="entry-title">%s</h2><span class="entry-secondary-snippet"> - <span class="snippet">%s</span></span></div></div></div></div>', i, date, link, stitle, title, desc))
         i += 1
         a = (obj, args) ->
-            div.find("div:first").click -> showDetail(obj, args)
+            div.find("div.entry-main").click -> showDetail(obj, args)
+            div.find("div.entry-icons").click -> toggleStar(obj, args)
         a(div, item)
 
         $("#entries").append(div)
@@ -257,25 +258,36 @@ handleFileSelect = (evt) ->
             if outline.attr("type") == "rss"
                 url = outline.attr("xmlUrl")
                 #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
-                f = {
-                    "title": outline.attr("title"),
-                    "type": "rss",
-                    "feedUrl": url,
-                    "favicon": "#{outline.attr('htmlUrl')}/favicon.ico"
-                }
 
-                li = generateFeed(f)
-                $("#sub-tree-item-0-main ul:first").append(li)
+                getFavicon outline.attr('htmlUrl'), (imgUrl) ->
+                    f = {
+                        "title": outline.attr("title"),
+                        "type": "rss",
+                        "feedUrl": url,
+                        "favicon": imgUrl
+                    }
 
-                feeds.push(f)
-                localStorage.setItem("feeds", JSON.stringify(feeds))
+                    li = generateFeed(f)
+                    $("#sub-tree-item-0-main ul:first").append(li)
+
+                    feeds.push(f)
+                    localStorage.setItem("feeds", JSON.stringify(feeds))
 
     reader.readAsText(file)
 
+getFavicon = (url, cb) ->
+    faviconUrl = "#{url}/favicon.ico"
+    cb(faviconUrl)
+    #reader = new FileReader()
+    #reader.onload = (oFREvent) ->
+    #    imgUrl = oFREvent.target.result
+    #    cb(imgUrl)
+    #reader.readAsDataURL(faviconUrl)
+
 $ ->
     # Event bindding for quick add
-    $("#lhn-add-subscription").on 'click', showAdd
-    $('#quick-add-close').on 'click', hideAdd
+    $("#lhn-add-subscription").on 'click', toggleAddBox
+    $('#quick-add-close').on 'click', toggleAddBox
 
     $("#add-feed").click -> addFeed()
     $(".folder-toggle").click -> toggle($(this).parent())
