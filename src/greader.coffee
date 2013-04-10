@@ -297,13 +297,12 @@ getFavicon = (url) -> "chrome://favicon/http://#{url.split("/")[2]}"
     #reader.readAsDataURL(faviconUrl)
 
 showSettingsPage = () ->
-    chrome.tabs.update url: chrome.extension.getURL("settings.html")
-    #     $("body").toggleClass("settings")
-    #     $("body").append($('<div><iframe id="settings-frame" name="settings-frame" src="settings.html" frameborder="0" scrolling="no" style="height: 600px;" class="loaded"></iframe></div>'))
-    #     $("#nav").toggle()
-    #     $("#chrome").toggle()
-    #     $("#settings-button-menu").toggle()
-     
+    $("body").toggleClass("settings")
+    $("body").append($('<div><iframe id="settings-frame" name="settings-frame" src="settings.html" frameborder="0" scrolling="no" style="height: 600px;" class="loaded"></iframe></div>'))
+    $("#nav").toggle()
+    $("#chrome").toggle()
+    $("#settings-button-menu").toggle()
+
 $ ->
     # Event bindding for quick add
     $("#lhn-add-subscription").on 'click', toggleAddBox
