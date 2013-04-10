@@ -292,6 +292,10 @@ getFavicon = (url) -> "chrome://favicon/http://#{url.split("/")[2]}"
     #    cb(imgUrl)
     #reader.readAsDataURL(faviconUrl)
 
+showSettingsPage = () ->
+    $("body").addClass("settings")
+    $("body").append($('<div><iframe id="settings-frame" name="settings-frame" src="settings.html" frameborder="0" scrolling="no" style="height: 600px;" class="loaded"></iframe></div>'))
+
 $ ->
     # Event bindding for quick add
     $("#lhn-add-subscription").on 'click', toggleAddBox
@@ -305,7 +309,7 @@ $ ->
     $("#lhn-recommendations-minimize").click -> $("#lhn-recommendations").toggleClass("section-minimized")
     $("#lhn-subscriptions-minimize").click -> $("#lhn-subscriptions").toggleClass("section-minimized")
     $(".settings-button-container").click -> $("#settings-button-menu").toggle()
-    $("#settings-button-menu").children().eq(5).click -> window.location.href = "pref.html"
+    $("#settings-button-menu").children().eq(5).on "click", showSettingsPage
 
     # Auto fix height
     auto_height = () ->
