@@ -7,3 +7,6 @@ zip:
 
 crx:
 	@../crxmake/bin/crxmake --pack-extension=gReader --extension-output=~/Downloads/gReader.crx --pack-extension-key=~/proj/amoblin/marboo-js.pem
+
+clean:
+	find . -name .DS_Store|xargs rm -f

@@ -23,7 +23,7 @@ generateOverview = () ->
 generateFolder = (dict) ->
     folder = $(sprintf('<li class="folder unselectable collapsed unread" id="sub-tree-item-9-main">
                                             <div class="toggle folder-toggle toggle-d-1"></div>
-                                            <a class="link" href="#"><div class="icon folder-icon icon-d-1" id="sub-tree-item-9-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1 name-unread" id="sub-tree-item-9-name">%s</div><div class="unread-count folder-unread-count unread-count-d-1" id="sub-tree-item-9-unread-count">(540)</div><div class="tree-item-action-container"><div id="sub-tree-item-9-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
+                                            <a class="link" href="#"><div class="icon folder-icon icon-d-1" id="sub-tree-item-9-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1 name-unread" id="sub-tree-item-9-name">%s</div><div class="unread-count folder-unread-count unread-count-d-1" id="sub-tree-item-9-unread-count"></div><div class="tree-item-action-container"><div id="sub-tree-item-9-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
                                             <ul></ul></li>', dict.title))
     ul = folder.find("ul:first")
     for item in dict.item
@@ -209,7 +209,7 @@ showMenu = (url) ->
     dirMenu = $('<div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":bp">
                 <div class="goog-menuitem-content"> 取消订阅</div>
             </div>')
-    dirMenu.click -> removeFeed()
+    dirMenu.on "click", removeFeed
     menu.append(dirMenu)
     menu.append($('<div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":br"></div>'))
     menu.append($('<div class="goog-menuitem goog-menuitem-disabled" role="menuitem" style="-webkit-user-select: none;" id=":bw"><div class="goog-menuitem-content">更改文件夹...</div></div>'))
@@ -244,29 +244,42 @@ refreshFeed = (feedUrl) ->
         localStorage.setItem(feedUrl, JSON.stringify(feed))
         showContent(feedUrl)
 
-handleFileSelect = (evt) ->
+importFromOpml = (evt) ->
     file = evt.target.files[0]
     reader = new FileReader()
 
     reader.onload =  (oFREvent) ->
         opml = $(oFREvent.target.result)
-        for outline_str in opml.find("outline")
+        opml.find(":first-child").remove()
+        for outline_str in opml.children()
             outline = $(outline_str)
+
+            f =
+                title: outline.attr("title"),
+                type: outline.attr("type") || "folder"
+                feedUrl: outline.attr("xmlUrl"),
+                favicon: "chrome://favicon/#{outline.attr("htmlUrl")}"
+
             if outline.attr("type") == "rss"
-                url = outline.attr("xmlUrl")
                 #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
-
-                f =
-                    title: outline.attr("title"),
-                    type: "rss",
-                    feedUrl: url,
-                    favicon: "chrome://favicon/#{outline.attr("htmlUrl")}"
-
                 li = generateFeed(f)
-                $("#sub-tree-item-0-main ul:first").append(li)
+            else
+                f.item = []
+                for sub_outline_str in outline.children()
+                    sub_outline = $(sub_outline_str)
+                    sub_f =
+                        title: sub_outline.attr("title"),
+                        type: sub_outline.attr("type") || "folder"
+                        feedUrl: sub_outline.attr("xmlUrl"),
+                        favicon: "chrome://favicon/#{sub_outline.attr("htmlUrl")}"
 
-                feeds.push(f)
-                localStorage.setItem("feeds", JSON.stringify(feeds))
+                    f.item.push(sub_f)
+                li = generateFolder(f)
+
+            $("#sub-tree-item-0-main ul:first").append(li)
+
+            feeds.push(f)
+            localStorage.setItem("feeds", JSON.stringify(feeds))
 
     reader.readAsText(file)
 
@@ -284,10 +297,10 @@ $ ->
     $("#lhn-add-subscription").on 'click', toggleAddBox
     $('#quick-add-close').on 'click', toggleAddBox
 
-    $("#add-feed").click -> addFeed()
+    $("#add-feed").on 'click', addFeed
     $(".folder-toggle").click -> toggle($(this).parent())
     $("#viewer-refresh").click -> refreshFeed(currentFeedUrl)
-    $('#opml-file').change -> handleFileSelect(event)
+    $('#opml-file').change -> importFromOpml(event)
     $("#lhn-selectors-minimize").click -> $("#lhn-selectors").toggleClass("section-minimized")
     $("#lhn-recommendations-minimize").click -> $("#lhn-recommendations").toggleClass("section-minimized")
     $("#lhn-subscriptions-minimize").click -> $("#lhn-subscriptions").toggleClass("section-minimized")
