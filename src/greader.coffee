@@ -141,7 +141,9 @@ addFeed = () ->
 
         localStorage.setItem(url, JSON.stringify(feed))
 
-        saveFavicon feed.link, (faviconUrl) ->
+        domainName = feed.link.split("/")[2]
+        url = "http://" + domainName + "/favicon.ico"
+        saveFavicon url, domainName, (faviconUrl) ->
             f =
                 title:   feed.title,
                 type:    "rss",
@@ -153,30 +155,27 @@ addFeed = () ->
             feeds.push(f)
             localStorage.setItem("feeds", JSON.stringify(feeds))
 
-saveFavicon = (url, cb) ->
-    domainName = url.split("/")[2]
-    faviconUrl = "http://" + domainName + "/favicon.ico"
-
+saveFavicon = (faviconUrl, domainName, cb) ->
     xhr = new XMLHttpRequest()
     xhr.open('GET', faviconUrl, true)
     xhr.responseType = 'blob'
     xhr.onload = (e) ->
-        if this.status != 200
-            console.log "error: status:" + this.status
-
-        fs.root.getFile domainName, {create: true}, (fileEntry) ->
-            #fileEntry.isFile == true
-            #fileEntry.name == 'log-f-api.txt'
-            #fileEntry.fullPath == '/log-f-api.txt'
-            fileEntry.createWriter (fileWriter) ->
-                fileWriter.onwriteend = (e) ->
-                    console.log('Write completed.')
-                    cb(fileEntry.toURL())
-                fileWriter.onerror = (e) ->
-                    console.log('Write failed:' + e.toString())
-                fileWriter.write(xhr.response)
+        if this.status != 200 or xhr.response.size == 0
+            saveFavicon("img/default.gif", domainName, cb)
+        else
+            fs.root.getFile domainName, {create: true}, (fileEntry) ->
+                #fileEntry.isFile == true
+                #fileEntry.name == 'log-f-api.txt'
+                #fileEntry.fullPath == '/log-f-api.txt'
+                fileEntry.createWriter (fileWriter) ->
+                    fileWriter.onwriteend = (e) ->
+                        console.log('Write completed.')
+                        cb(fileEntry.toURL())
+                    fileWriter.onerror = (e) ->
+                        console.log('Write failed:' + e.toString())
+                    fileWriter.write(xhr.response)
+                , errorHandler
             , errorHandler
-        , errorHandler
     xhr.send()
 
 getJsonFeed = (url, cb) ->
@@ -302,7 +301,12 @@ toggleMenu = (menu) ->
 refreshFeed = (feedUrl) ->
     getJsonFeed feedUrl, (feed) ->
         localStorage.setItem(feedUrl, JSON.stringify(feed))
-        showContent(feedUrl)
+
+        domainName = feed.link.split("/")[2]
+        url = "http://" + domainName + "/favicon.ico"
+        saveFavicon url, domainName, (faviconUrl) ->
+            return
+        showContent(feed.feedUrl)
 
 importFromOpml = (evt) ->
     file = evt.target.files[0]
@@ -316,12 +320,15 @@ importFromOpml = (evt) ->
 
             f =
                 title: outline.attr("title"),
-                type: outline.attr("type") || "folder"
+                type: outline.attr("type") || "folder",
                 feedUrl: outline.attr("xmlUrl"),
 
             if outline.attr("type") == "rss"
                 wrap_fun = (outline, f) ->
-                    saveFavicon outline.attr("htmlUrl"), (faviconUrl) ->
+
+                    domainName = outline.attr("htmlUrl").split("/")[2]
+                    url = "http://" + domainName + "/favicon.ico"
+                    saveFavicon url, domainName, (faviconUrl) ->
                         f.favicon = faviconUrl
                         #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
                         li = generateFeed(f)
@@ -335,7 +342,9 @@ importFromOpml = (evt) ->
                 for sub_outline_str in outline.children()
                     sub_outline = $(sub_outline_str)
                     wrap_fun = (sub_outline, f) ->
-                        saveFavicon sub_outline.attr("htmlUrl"), (faviconUrl) ->
+                        domainName = sub_outline.attr("htmlUrl").split("/")[2]
+                        url = "http://" + domainName + "/favicon.ico"
+                        saveFavicon url, domainName, (faviconUrl) ->
                             sub_f =
                                 title: sub_outline.attr("title"),
                                 type: sub_outline.attr("type") || "folder"
