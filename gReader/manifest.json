@@ -3,7 +3,7 @@
     "name": "gReader",
     "description": "gReader is not Google Reader.",
     "version": "0.1",
-    "homepage_url": "http://marboo.biz",
+    "homepage_url": "http://reader.marboo.biz",
     "content_scripts": [{
         "matches": ["*://*/*"],
         "js": ["js/content.js"]
@@ -16,7 +16,7 @@
     ],
     "browser_action": {
         "default_icon": "img/greader-32.png",
-        "default_title": "Marboo Note"
+        "default_title": "gReader"
     },
     "icons": {
         "16": "img/greader-32.png",
