@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <title>gReader</title>
+
+        <link href="img/favicon.ico" rel="SHORTCUT ICON">
+
+        <meta name="application-name" content="gReader">
+        <meta name="description" content="通过gReader将您的资讯和博客整合到一个地方">
+        <meta name="application-url" content="/reader/view/">
+
+        <!--
+        <link rel="icon" href="/media/images/marboo/352024653-app-icon-32.png" sizes="32x32">
+        <link rel="icon" href="/media/images/marboo/3068170011-app-icon-64.png" sizes="64x64">
+        -->
+
+        <link type="text/css" rel="stylesheet" href="css/main.css">
+        <link type="text/css" rel="stylesheet" href="css/scroll.css">
+        <link type="text/css" rel="stylesheet" href="css/scroll_large_density.css" disabled="disabled" />
+        <link type="text/css" rel="stylesheet" href="css/scroll_medium_density.css" disabled="disabled" />
+        <link type="text/css" rel="stylesheet" href="css/scroll_small_density.css" />
+    </head>
+    <body class="webkit loaded">
+        <!-- removed: 顶部导航 -->
+        <div class="message-area-container" id="message-area-container">
+            <div class="goog-inline-block">
+                <div class="jfk-butterBar" id="message-area"> </div>
+            </div>
+        </div>
+        <div class="message-area-container hidden" id="loading-area-container">
+            <div class="goog-inline-block">
+                <div class="jfk-butterBar jfk-butterBar-shown jfk-butterBar-info" id="loading-area">正在加载...</div>
+            </div>
+        </div>
+        <div id="top-bar" class=" jfk" style="">
+            <a href="http://www.google.com/reader/view/" id="logo-container"><h1 id="logo"><span>Google Reader</span></h1></a>
+            <div id="search">
+                <input id="search-input" class="jfk-textinput" type="text" title="&quot;搜索您的供稿&quot;">
+            </div>
+        </div>
+        <!--
+        <script type="text/javascript">if (window.gbar && window.gbar.qfgq && window.gbar.qfgq()) {
+            var topBar = document.getElementById('top-bar');
+            if (topBar) { topBar.className += ' jfk'; } }
+        </script>
+        -->
+        <div id="quick-add-bubble-holder" class="hidden">
+            <form id="quick-add-form" action="">
+                <span id="quick-add-instructions">输入搜索字词来查找供稿或粘贴供稿网址。</span>
+                <div id="quick-add-close"></div>
+                <div id="quick-add-input-div">
+                    <input type="text" name="quickadd" id="quickadd" autocomplete="off" spellcheck="false">
+                    <div role="wairole:button" tabindex="0" id="quick-add-btn" class="goog-button goog-button-base unselectable goog-inline-block goog-button-float-left goog-button-tight">
+                        <div class="goog-button-base-outer-box goog-inline-block">
+                            <div class="goog-button-base-inner-box goog-inline-block">
+                                <div class="goog-button-base-pos">
+                                    <div class="goog-button-base-content">
+                                        <div class="goog-button-body" id="add-feed">添加</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="quick-add-helptext">例如，googleblog.blogspot.com 或 CNN</div>
+            </form>
+        </div>
+        <!-- 主视图 -->
+        <div id="main" class="" style="">
+            <div id="nav">
+                <div id="logo-section"> <a id="logo-link" href="#">阅读器</a> </div>
+                <div id="lhn-add-subscription-section">
+                    <span id="lhn-add-subscription" class="jfk-button-primary jfk-button" role="button" style="-webkit-user-select: none;" tabindex="0">订阅</span>
+                    <input type="file" name="opml-file" id="opml-file" size="40">
+                </div>
+                <div id="scrollable-sections-holder">
+                    <div id="scrollable-sections" class="mouseout" style="height: 377.1999969482422px;">
+                        <div id="home-section">
+                            <div id="overview-selector" class="selector no-icon selected">
+                                <a href="#" class="link"><span class="text">主页</span></a>
+                            </div>
+                        </div>
+                        <div id="lhn-selectors" class="section lhn-section section-minimized ">
+                            <div id="lhn-selectors-minimize" class="section-button section-minimize"></div>
+                            <div id="lhn-selectors-menubutton" class="section-button section-menubutton goog-menu-button goog-inline-block" aria-expanded="false" role="button" style="-webkit-user-select: none;" tabindex="0" aria-haspopup="true">
+                                <div class="goog-inline-block goog-menu-button-outer-box">
+                                    <div class="goog-inline-block goog-menu-button-inner-box">
+                                        <div class="goog-inline-block goog-menu-button-caption"></div>
+                                        <div class="goog-inline-block goog-menu-button-dropdown">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lhn-section-primary">
+                                <div id="reading-list-selector" class="selector no-icon unread">
+                                    <a href="#" class="link"><span class="text"><span class="label">所有条目</span><span id="reading-list-unread-count" class="unread-count"></span></span></a>
+                                </div>
+                            </div>
+                            <div class="lhn-section-secondary">
+                                <div id="star-selector" class="selector">
+                                    <a href="#" class="link"><div class="selector-icon"></div><span class="text">加星标的条目</span></a>
+                                </div>
+                                <div id="trends-selector" class="selector">
+                                    <a href="#" class="link"><div class="selector-icon"></div><span class="text">趋势</span></a>
+                                </div>
+                                <div id="directory-selector" class="selector no-icon">
+                                    <a href="#" class="link"><span class="text">浏览其他内容</span></a>
+                                </div>
+                            </div>
+                            <div class="selectors-footer"></div>
+                        </div>
+                        <div id="lhn-recommendations" class="section lhn-section section-minimized">
+                            <div id="lhn-recommendations-minimize" class="section-button section-minimize"></div>
+                            <div id="lhn-recommendations-menubutton" class="section-button section-menubutton goog-menu-button goog-inline-block" aria-expanded="false" role="button" style="-webkit-user-select: none;" tabindex="0" aria-haspopup="true">
+                                <div class="goog-inline-block goog-menu-button-outer-box">
+                                    <div class="goog-inline-block goog-menu-button-inner-box">
+                                        <div class="goog-inline-block goog-menu-button-caption"> </div>
+                                        <div class="goog-inline-block goog-menu-button-dropdown">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="recommendations-tree-container" class="scroll-tree-container">
+                                <ul id="recommendations-tree" class="scroll-tree">
+                                    <li class="folder unselectable expanded" id="recs-tree-item-0-main">
+                                    <div class="toggle folder-toggle toggle-d-0"></div>
+                                    <a class="link lhn-section-primary" href="#" id="recs-tree-item-0-link"><div class="icon folder-icon icon-d-0" id="recs-tree-item-0-icon"></div><div class="name-text folder-name-text name-text-d-0 name folder-name name-d-0" id="recs-tree-item-0-name">探索</div><div class="unread-count folder-unread-count unread-count-d-0" id="recs-tree-item-0-unread-count"></div></a>
+                                    <ul class="lhn-section-secondary">
+                                        <li class="sub unselectable expanded" id="recs-tree-item-1-main">
+                                        <div class="toggle sub-toggle toggle-d-1 hidden"></div>
+                                        <a class="link" href="#" id="recs-tree-item-1-link"><div class="icon sub-icon icon-d-1" id="recs-tree-item-1-icon"></div><div class="name-text sub-name-text name-text-d-1 name sub-name name-d-1" id="recs-tree-item-1-name">推荐的条目</div><div class="unread-count sub-unread-count unread-count-d-1" id="recs-tree-item-1-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-1-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
+                                        </li>
+                                        <li class="folder unselectable collapsed" id="recs-tree-item-2-main">
+                                        <div class="toggle folder-toggle toggle-d-1">
+                                        </div>
+                                        <a class="link" href="#" id="recs-tree-item-2-link"><div class="icon folder-icon icon-d-1" id="recs-tree-item-2-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1" id="recs-tree-item-2-name">推荐源</div><div class="unread-count folder-unread-count unread-count-d-1" id="recs-tree-item-2-unread-count"></div></a>
+                                        <!--
+                                        <ul>
+                                            <li class="sub unselectable expanded" id="recs-tree-item-3-main">
+                                            <div class="toggle sub-toggle toggle-d-2 hidden">
+                                            </div>
+                                            <a class="link" href="/reader/view/feed/http%3A%2F%2Fwww.lupaworld.com%2Fmyrss.php" id="recs-tree-item-3-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-3-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-3-name">新闻 - LUPA开源社区</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-3-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-3-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
+                                            <li class="sub unselectable expanded" id="recs-tree-item-4-main"><div class="toggle sub-toggle toggle-d-2 hidden"></div><a class="link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Fwww.linuxidc.com%2FrssFeed.aspx" id="recs-tree-item-4-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-4-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-4-name">Linux公社 - Linux系统门户网站</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-4-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-4-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
+                                            <li class="sub unselectable expanded" id="recs-tree-item-5-main"><div class="toggle sub-toggle toggle-d-2 hidden"></div><a class="link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Fubuntu.group.javaeye.com%2Frss" id="recs-tree-item-5-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-5-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-5-name">Ubuntu For Fun</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-5-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-5-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
+                                            <li class="sub unselectable expanded" id="recs-tree-item-6-main"><div class="toggle sub-toggle toggle-d-2 hidden"></div><a class="link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Frss.sina.com.cn%2Fnews%2Fchina%2Ffocus15.xml" id="recs-tree-item-6-link"><div class="icon sub-icon icon-d-2" id="recs-tree-item-6-icon"></div><div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2" id="recs-tree-item-6-name">国内要闻-新浪新闻</div><div class="unread-count sub-unread-count unread-count-d-2" id="recs-tree-item-6-unread-count"></div><div class="tree-item-action-container"><div id="recs-tree-item-6-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a></li>
+                                        </ul>
+                                        -->
+                                        </li>
+                                    </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="lhn-section-footer">
+                                <a href="#" id="recommendations-tree-view-all">查看所有推荐的内容 »</a>
+                            </div>
+                        </div>
+                        <div id="lhn-subscriptions" class="section lhn-section  ">
+                            <div id="lhn-subscriptions-minimize" class="section-button section-minimize"></div>
+                            <div id="lhn-subscriptions-menubutton" class="section-button section-menubutton goog-menu-button goog-inline-block" aria-expanded="false" role="button" style="-webkit-user-select: none;" tabindex="0" aria-haspopup="true">
+                                <div class="goog-inline-block goog-menu-button-outer-box">
+                                    <div class="goog-inline-block goog-menu-button-inner-box">
+                                        <div class="goog-inline-block goog-menu-button-caption"></div>
+                                        <div class="goog-inline-block goog-menu-button-dropdown">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="lhn-section-primary">
+                                <span id="sub-tree-header" class="unselectable">订阅</span>
+                                <span id="sub-tree-refreshing" class="hidden">刷新...</span>
+                            </div>
+                            <div id="sub-tree-container" class="scroll-tree-container lhn-section-secondary">
+                                <ul id="sub-tree" class="scroll-tree scroll-tree-show-updated">
+                                    <li class="folder unselectable expanded" id="sub-tree-item-0-main">
+                                        <div class="toggle folder-toggle toggle-d-0"></div>
+                                        <a class="link" href="/reader/view/user/-/state/com.google/root" id="sub-tree-item-0-link">
+                                            <div class="icon folder-icon icon-d-0" id="sub-tree-item-0-icon"></div>
+                                            <div class="name-text folder-name-text name-text-d-0 name folder-name name-d-0" id="sub-tree-item-0-name">root</div>
+                                            <div class="unread-count folder-unread-count unread-count-d-0" id="sub-tree-item-0-unread-count"></div>
+                                            <div class="tree-item-action-container">
+                                                <div id="sub-tree-item-0-action" class="action tree-item-action section-button section-menubutton goog-menu-button">
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <!-- all feeds should append here -->
+                                        <ul>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="scrollable-sections-top-shadow"></div>
+                    <div id="scrollable-sections-bottom-shadow"></div>
+                </div>
+            </div>
+            <div id="chrome" class="page-view">
+                <div id="chrome-viewer-container">
+                    <div id="chrome-viewer" class="">
+                        <div id="viewer-header-container">
+                            <div id="viewer-header">
+                                <div id="viewer-top-controls-container">
+                                    <div id="viewer-top-controls">
+                                        <div class="lhn-nav-button-container">
+                                        </div>
+                                        <div role="button" id="viewer-refresh" class="goog-inline-block jfk-button jfk-button-standard viewer-buttons" tabindex="0" title="刷新" style="-webkit-user-select: none;">
+                                            <img src="img/refresh.png" alt="" class="jfk-button-img">
+                                        </div>
+                                        <div id="viewer-view-options" class="goog-inline-block goog-flat-menu-button" aria-expanded="false" role="listbox" style="-webkit-user-select: none;" tabindex="0" aria-haspopup="false">
+                                            <div class="goog-inline-block goog-flat-menu-button-caption">所有条目</div>
+                                            <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div></div>
+                                        <span id="mark-all-as-read-split-button">
+                                            <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-collapse-right" tabindex="0" style="-webkit-user-select: none;">全部标为已读</div>
+                                            <div class="goog-inline-block goog-flat-menu-button goog-flat-menu-button-collapse-left" title="" role="button" style="-webkit-user-select: none;" tabindex="0" aria-haspopup="true">
+                                                <div class="goog-inline-block goog-flat-menu-button-caption">
+                                                </div>
+                                                <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
+                                            </div>
+                                        </span>
+                                        <div role="wairole:button" tabindex="0" class="goog-button goog-button-base unselectable goog-inline-block goog-button-float-left goog-menu-button goog-button-tight" id="stream-prefs-menu">
+                                            <div class="goog-button-base-outer-box goog-inline-block">
+                                                <div class="goog-button-base-inner-box goog-inline-block">
+                                                    <div class="goog-button-base-pos">
+                                                        <div class="goog-button-base-content">
+                                                            <div class="goog-button-body">供稿设置...</div>
+                                                            <div class="goog-menu-button-dropdown">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span id="settings-button-container">
+                                            <div role="button" id="settings-button" class="goog-inline-block jfk-button jfk-button-standard viewer-buttons goog-flat-menu-button" tabindex="0" title="设置" aria-expanded="false" style="-webkit-user-select: none;" aria-haspopup="true" aria-activedescendant="">
+                                                <div class="goog-inline-block goog-flat-menu-button-caption">
+                                                    <img src="img/settings.png" alt="" class="jfk-button-img" id="aeaoofnhgocdbnbeljkmbjdmhbcokfdb-mousedown">
+                                                </div>
+                                                <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
+                                            </div>
+                                        </span>
+                                        <span id="item-up-down-buttons">
+                                            <div role="button" id="entries-up" class="goog-inline-block jfk-button jfk-button-standard jfk-button-collapse-right jfk-button-narrow" tabindex="0" title="上一个条目" style="-webkit-user-select: none;">
+                                                <img src="img/up_arrow.png" alt="" class="jfk-button-img">
+                                            </div>
+                                            <div role="button" id="entries-down" class="goog-inline-block jfk-button jfk-button-standard jfk-button-collapse-left jfk-button-narrow" tabindex="0" title="下一个条目" style="-webkit-user-select: none;">
+                                                <img src="img/down_arrow.png" alt="" class="jfk-button-img">
+                                            </div>
+                                        </span>
+                                        <span id="chrome-view-links">
+                                            <span id="stream-view-options-container">
+                                                <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow jfk-button-collapse-right" tabindex="0" aria-pressed="false" style="-webkit-user-select: none;" title="摘要视图">
+                                                    <img src="img/magnifying_glass.png" style="width: 21px; height: 21px;" class="jfk-button-img">
+                                                </div>
+                                                <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow jfk-button-collapse-left jfk-button-collapse-right" tabindex="0" aria-pressed="false" style="-webkit-user-select: none;" title="扩展视图">
+                                                    <img src="img/view_options_details.png" style="width: 21px; height: 21px;" class="jfk-button-img">
+                                                </div>
+                                                <div role="button" class="goog-inline-block jfk-button jfk-button-standard jfk-button-narrow jfk-button-collapse-left" tabindex="0" aria-pressed="false" style="-webkit-user-select: none;" title="列表视图">
+                                                    <img src="img/view_options_list.png" style="width: 21px; height: 21px;" class="jfk-button-img">
+                                                </div>
+                                            </span>
+                                        </span>
+                                        <div id="viewer-recommendations-return" class="link unselectable">« 返回到您的推荐供稿</div>
+                                        <span id="viewer-translated-by" class="hidden">由 Google 翻译 - <span class="link" id="viewer-translate-revert-link">查看原始内容</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="chrome-fullscreen-top-toggle" class="hidden">
+                            <div id="chrome-fullscreen-top-toggle-icon">
+                            </div>
+                        </div>
+                        <div id="viewer-container">
+                            <div id="activity-indicator" class="hidden">
+                                <div class="jfk-activityIndicator">
+                                    <div>
+                                    </div>
+                                    <div class="jfk-activityIndicator-icon">
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="viewer-entries-container" style="height: 434px;">
+                                <div id="title-and-status-holder">
+                                    <span id="chrome-title"></span>
+                                    <span id="viewer-single-parent"></span>
+                                    <span id="viewer-single-item-parent"></span>
+                                    <span id="entries-status"></span>
+                                    <div class="clear" style=""></div>
+                                </div>
+                                <div class="samedir">
+                                    <div id="quick-add-success" class="hidden">
+                                        您已经订阅了“<span id="quick-add-success-title"></span>”。
+                                    </div>
+                                    <div id="entries" class="single-source list">
+                                        <div id="scroll-filler" class="hidden">
+                                            <div id="scroll-filler-recs-message" class="scroll-filler-message">
+                                                <div>您没有更多条目了。</div>
+                                                <div class="secondary">请等等！我们有一些推荐的条目供您阅读。</div>
+                                                <div class="secondary">好极了！ &nbsp;<a id="scroll-filler-see-recommendations" href="http://www.google.com/reader/view/pop/topic%2Ftop%2Flanguage%2Fzh-CN">为我显示自己的推荐内容</a></div>
+                                            </div>
+                                            <div id="single-item-bottom-links">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="viewer-page-container">
+                                <div class="viewer-page">
+                                    <div id="home">
+                                        <div id="sections-header">
+                                            <div class="contents">
+                                                <div class="lhn-nav-button-container">
+                                                    <div role="wairole:button" tabindex="0" class="goog-button goog-button-base unselectable goog-inline-block goog-button-float-left goog-menu-button goog-button-tight hidden" id="chrome-lhn-menu">
+                                                        <div class="goog-button-base-outer-box goog-inline-block">
+                                                            <div class="goog-button-base-inner-box goog-inline-block">
+                                                                <div class="goog-button-base-pos">
+                                                                    <div class="goog-button-base-content">
+                                                                        <div class="goog-button-body">导航</div>
+                                                                        <div class="goog-menu-button-dropdown"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="overview-section-header">您的阅读器中的更新摘要</div>
+                                                <div class="settings-button-container">
+                                                    <div role="button" id="settings-button" class="goog-inline-block jfk-button jfk-button-standard viewer-buttons goog-flat-menu-button" tabindex="0" title="设置" aria-expanded="false" style="-webkit-user-select: none;" aria-haspopup="true">
+                                                        <div class="goog-inline-block goog-flat-menu-button-caption">
+                                                            <img src="img/settings.png" alt="" class="jfk-button-img">
+                                                        </div>
+                                                        <div class="goog-inline-block goog-flat-menu-button-dropdown">&nbsp;</div>
+                                                    </div>
+                                                </div>
+                                                <div class="clear">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="sections-holder" style="height: 408.3999938964844px;">
+                                            <div id="sections">
+                                                <!-- hide: right section -->
+                                                <!--
+                                                <div id="right-section">
+                                                    <div class="overview-section">
+                                                        <div class="section" id="recent-activity">
+                                                            <div id="recent-activity-star" class="recent">
+                                                                <div class="overview-stream" id="user/08003626058048695165/state/com.google/starred">
+                                                                    <h4><a href="http://www.google.com/reader/view/user/-/state/com.google/starred">最近加了星标的条目</a></h4>
+                                                                    <div class="recent-item">
+                                                                        <span class="link overview-item-link" id="tag:google.com,2005:reader/item/74878fc6a8d8793c">Apvlv 增添分页浏览功能</span> 来源： <span class="recent-stream-title overview-item-link" id="tag:google.com,2005:reader/item/74878fc6a8d8793c">LinuxTOY</span></div>
+                                                                    <div class="recent-item"><span class="link overview-item-link" id="tag:google.com,2005:reader/item/259b27d922cb5fc0">Google Chrome 的 Linux 版本将采用 GTK+</span> 来源： <span class="recent-stream-title overview-item-link" id="tag:google.com,2005:reader/item/259b27d922cb5fc0">LinuxTOY</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div id="recent-activity-read" class="recent">
+                                                                <div class="overview-stream" id="user/08003626058048695165/state/com.google/read">
+                                                                    <h4><a href="http://www.google.com/reader/view/user/-/state/com.google/read">最近阅读的条目</a></h4>
+                                                                    <div class="recent-item">
+                                                                        <span class="link overview-item-link" id="tag:google.com,2005:reader/item/58c6f63f2ceea37d">CoreAVC 1.9 for Linux 安装指南</span>
+                                                                        来源：
+                                                                        <span class="recent-stream-title overview-item-link" id="tag:google.com,2005:reader/item/58c6f63f2ceea37d">LinuxTOY</span></div>
+                                                                    <div class="recent-item">
+                                                                        <span class="link overview-item-link" id="tag:google.com,2005:reader/item/234b2cead2e82066">PCLinuxOS 2009.1 发布</span>
+                                                                        来源：
+                                                                        <span class="recent-stream-title overview-item-link" id="tag:google.com,2005:reader/item/234b2cead2e82066">LinuxTOY</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div id="tips">
+                                                            <div class="section-header">技巧和窍门</div>
+                                                            <div id="tips-body">
+                                                                <p class="promo-image-text">通过我们的“发送到”功能，您可以更轻松地将自己喜欢的信息共享到 Blogger、Twitter、Facebook 等。只需转到<a href="http://www.google.com/reader/settings?hl=zh-CN&display=item-links" class="link">设置</a>页面，然后启用要使用的服务即可。</p>
+                                                                <div class="promo-image-container">
+                                                                    <a href="http://www.google.com/reader/settings?hl=zh-CN&display=item-links" class="link"><img src="./gReader_files/2062310107-send-to.png" width="220" height="94" alt="发送到屏幕截图"></a>
+                                                                </div>
+                                                                <p class="promo-image-text">如果未列出您喜爱的服务，您可以使用网址模板创建自己的“发送到”链接。</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                -->
+                                                <!-- 内容 -->
+                                                <div id="left-section">
+                                                    <div class="overview-section">
+                                                        <div id="overview">
+                                                            <div class="section-header">您的订阅中的新内容</div>
+                                                            <!--
+                                                            <div class="overview-segment overview-stream" id="feed/http://feeds.feedburner.com/linuxtoy">
+                                                                <div class="overview-header">
+                                                                    <span class="title">
+                                                                        <a class="sub-link" href="#" id="overview-feed/http://feeds.feedburner.com/linuxtoy" target="_blank">LinuxTOY<span class="unread"><span class="unread">(31)</span></span></a>
+                                                                    </span>
+                                                                </div>
+                                                                <img src="./gReader_files/linuxdeepin-12.12-beta-coming.jpg" width="161" height="66" alt="">
+                                                                <div class="overview-metadata" dir="ltr">
+                                                                    <p class="link item-title overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">Koreader 正式发布</p>
+                                                                    <p class="item-snippet overview-item-link" id="tag:google.com,2005:reader/item/7e99d3220c53e727">
+
+                                                                    Kindle 上的开源阅读器 Koreader 正式发布。感谢 Qingping Hou 和 Xin Huang 的来稿。
+
+                                                                    Overview 
+
+                                                                    我们希望在我们的阅读设备上能够享受这些自由：
+
+                                                                    1.  数字内容不被局限于特定厂商的专有系统的自由。 
+                                                                    2. 用户可以获得阅读器软件运行细节，保障数字内容不被非法窥探的自由。 
+                                                                    3. 用户修改阅读器软件外观和功能的自由。 
+
+                                                                    Koreader 正是让我们获得这些自由的一个尝试。Koreader 在 GPLv3 协议下发布，支持开放文档格式 ...</p>
+                                                                </div>
+                                                                <div class="label">
+                                                                    <p>了解更多  <a class="label-link" id="overview-user/08003626058048695165/label/IT.数码" href="http://www.google.com/reader/view/user%2F-%2Flabel%2FIT.%E6%95%B0%E7%A0%81" target="_blank">IT.数码 <span class="unread">(75)</span></a>  的信息</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="overview-segment overview-stream" id="feed/http://blog.sinzy.net/rss">
+                                                                <div class="overview-header">
+                                                                    <span class="title">
+                                                                        <a class="sub-link" href="http://www.google.com/reader/view/feed/http%3A%2F%2Fblog.sinzy.net%2Frss" id="overview-feed/http://blog.sinzy.net/rss" target="_blank">Blogs @ SiNzY.net
+                                                                            <span class="unread"><span class="unread">(13)</span></span></a>
+                                                                    </span>
+                                                                </div>
+
+                                                                <div class="overview-metadata" dir="ltr"><p class="link item-title overview-item-link" id="tag:google.com,2005:reader/item/2ebdd715d2aa2fc4">老段子，把西游记倒过来看</p>
+                                                                    <p class="item-snippet overview-item-link" id="tag:google.com,2005:reader/item/2ebdd715d2aa2fc4">如果把西游记倒过来看其实更精彩。 如来派师徒四人与八部天龙小白龙去东土 大唐去传教,在一路上遇到了各种妖怪,打来 
+                                                                    打去发现他们都是有后台的,无论怎么作恶都不受惩罚，八戒和沙僧觉得太黑暗了,无奈一个躲进了高老庄,一个钻进了流沙河,只有悟空坚持正义一路斩妖除魔护送师傅东去传教。结果天庭对悟空实在忍无可忍就 
+                                                                    和如来达成协议——我们可以保证唐三藏 平安到长安,不过你得把孙悟空这个刺儿头 
+                                                                    给办了,如来同意了，在一翻阴谋之下，白龙重伤坠入山涧，悟空败了，被压在了五 指山下,而唐三藏却抛弃了孙悟空，孤身来  ...</p></div>
+                                                            </div>
+                                                            -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="overview-footer"><div id="footer"><div id="viewer-links"></div>
+                                                    <a target="_blank" href="http://googlereader.blogspot.com/"><b>Google 阅读器博客</b>（英文版）</a>
+                                                    -
+
+                                                    <a target="_blank" href="http://www.google.com/support/forum/p/reader">论坛（英文版）</a>
+                                                    -
+                                                    <a target="_blank" href="http://www.google.com/intl/zh-CN/privacy.html">隐私政策</a>
+                                                    -
+                                                    <a target="_blank" href="http://www.google.com/support/reader/?hl=zh-CN">帮助</a>
+                                                    <div class="copyright">©2013 Google</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="loading-error" style="margin: 1em; clear: left; display: none;">
+            <p style="font-size:larger;margin:40px 0">花费的时间比平常要多。<a href="http://www.google.com/reader/"><b>尝试重新载入页面</b></a>。</p>
+            <div>如果不起作用，您可以：
+                <ol>
+                    <li>尝试<a href="https://www.google.com/reader/view/?hl=zh-CN">使用 https</a>。</li>
+                    <li>尝试<a href="https://www.google.com/accounts/Logout?hl=zh_CN&nui=1&service=reader&continue=http://www.google.com/reader/">注销</a>。</li>
+                    <li>清除您的<a href="http://maps.google.com/support/bin/answer.py?hl=zh-CN&answer=16539" target="_blank">浏览器缓存</a>并重试。</li>
+                    <li>要查看更多的问题排查提示，请访问<a href="http://www.google.com/support/reader/bin/answer.py?hl=zh-CN&answer=70663" target="_blank">帮助中心</a>。</li>
+                </ol>
+            </div>
+        </div>
+        <div id="viewer-details-template" class="hidden">
+            <div class="viewer-details-stats-container"></div>
+            <div class="viewer-details-charts">
+                <div class="tab-group">
+                    <div class="tab-group-headers">
+                        <div id="sub-day-bucket-chart-header" class="unselectable tab-header tab-header-selected">过去 30 天</div>
+                        <div id="sub-hour-bucket-chart-header" class="unselectable tab-header">每日动态</div>
+                        <div id="sub-dow-bucket-chart-header" class="unselectable tab-header">每周动态　</div>
+                    </div>
+                    <div class="tab-group-contents">
+                        <div id="sub-day-bucket-chart-contents" class="tab-contents">
+                            <table class="sub-day-bucket-display">
+                                <tbody>
+                                    <tr>
+                                        <td align="left">
+                                            <map id="sub-day-bucket-map" name="sub-day-bucket-map"></map>
+                                            <input type="hidden" class="chart-data" value="">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bucket-chart-legend">
+                                <div class="published">
+                                    <div class="color-box"></div><div class="label">已发布条目</div>
+                                </div>
+                                <div class="read">
+                                    <div class="color-box"></div><div class="label">已读条目</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sub-hour-bucket-chart-contents" class="tab-contents hidden">
+                            <table class="sub-hour-bucket-display">
+                                <tbody>
+                                    <tr>
+                                        <td align="left">
+                                            <map id="sub-hour-bucket-map" name="sub-hour-bucket-map"></map>
+                                            <input type="hidden" class="chart-data" value="">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bucket-chart-legend">
+                                <div class="published">
+                                    <div class="color-box"></div>
+                                    <div class="label">已发布条目</div>
+                                </div>
+                                <div class="read">
+                                    <div class="color-box"></div>
+                                    <div class="label">已读条目</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sub-dow-bucket-chart-contents" class="tab-contents hidden">
+                            <table class="sub-dow-bucket-display">
+                                <tbody>
+                                    <tr>
+                                        <td align="left">
+                                            <map id="sub-dow-bucket-map" name="sub-dow-bucket-map"></map>
+                                            <input type="hidden" class="chart-data" value="">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="bucket-chart-legend">
+                                <div class="published">
+                                    <div class="color-box"></div>
+                                    <div class="label">已发布条目</div>
+                                </div>
+                                <div class="read">
+                                    <div class="color-box"></div>
+                                    <div class="label">已读条目</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--
+        <div class="goog-menu goog-menu-vertical subscription-folders-menu" style="-webkit-user-select: none; max-height: 394px; visibility: visible; left: 587px; top: 108px; display: none;" role="menu" aria-haspopup="true" tabindex="-1" aria-activedescendant="">
+            <div class="goog-menuitem goog-option-selected goog-option" role="menuitem" style="-webkit-user-select: none;" id=":7k">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"></div>
+                    最新条目在前
+                </div>
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":7l">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"> </div> 最旧条目在前
+                </div>
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":7m">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"> </div> 神奇排序
+                </div>
+            </div>
+            <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":7n">
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":7o">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"> </div> 设置为初始页
+                </div>
+            </div>
+            <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":7p">
+            </div>
+            <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":7q">
+                <div class="goog-menuitem-content"> 查看明细和统计信息</div>
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":7r">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"> </div> 翻译为我使用的语言
+                </div>
+            </div>
+        </div>
+        -->
+        <div id="settings-button-menu" class="goog-menu" style="-webkit-user-select: none; visibility: visible; left: 1158px; top: 38px; display: none;" role="menu" aria-haspopup="true" aria-activedescendant="">
+            <div class="goog-menuheader goog-menuheader-disabled" aria-disabled="true" style="-webkit-user-select: none;" id=":0">显示密度：</div>
+            <div class="goog-menuitem goog-option-selected goog-option" role="menuitem" style="-webkit-user-select: none;" id=":1">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"></div> 标准 （适用于更大屏幕）
+                </div>
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":2">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"></div> 适中 （适用于更大屏幕）
+                </div>
+            </div>
+            <div class="goog-menuitem goog-option" role="menuitem" style="-webkit-user-select: none;" id=":3">
+                <div class="goog-menuitem-content">
+                    <div class="goog-menuitem-checkbox"> </div>紧凑
+                </div>
+            </div>
+            <div class="goog-menuseparator" style="-webkit-user-select: none;" role="separator" id=":4">
+            </div>
+            <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":5">
+                <div class="goog-menuitem-content">阅读器设置</div>
+            </div>
+            <div class="goog-menuitem" role="menuitem" style="-webkit-user-select: none;" id=":6">
+                <div class="goog-menuitem-content">阅读器帮助</div>
+            </div>
+        </div>
+
+        <script type="text/javascript"></script>
+
+        <script type="text/javascript" src="lib/jquery-1.9.1.min.js" ></script>
+        <!--
+        <script type="text/javascript" src="lib/jquery.jfeed.pack.js" ></script>
+        -->
+        <script type="text/javascript" src="lib/sprintf.min.js" ></script>
+        <script type="text/javascript" src="js/config.js"></script>
+        <script type="text/javascript" src="js/greader.js"></script>
+        <!--
+        <script type="text/javascript" src="js/scroll_large_density.js"></script>
+        <script type="text/javascript" src="js/scroll_medium_density.js"></script>
+        <script type="text/javascript" src="js/scroll_small_density.js"></script>
+        -->
+    </body>
+</html>
