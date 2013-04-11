@@ -137,24 +137,21 @@ addFeed = () ->
         # TODO: Use google style flash messages instead of alert
         alert "You have subscribed to #{url}"
         return
-    getJsonFeed url, (feed) ->
+
+    refreshFeed url, (feed, faviconUrl) ->
+        f =
+            title:   feed.title,
+            type:    "rss",
+            feedUrl: feed.feedUrl,
+            favicon: faviconUrl
+        li = generateFeed(f)
+        $("#sub-tree-item-0-main ul:first").append(li)
+
         $("#quick-add-bubble-holder").toggleClass("show")
         $("#quick-add-bubble-holder").toggleClass("hidden")
 
-        localStorage.setItem(url, JSON.stringify(feed))
-        domainName = feed.link.split("/")[2]
-        url = "http://" + domainName + "/favicon.ico"
-        saveFavicon url, domainName, (faviconUrl) ->
-            f =
-                title:   feed.title,
-                type:    "rss",
-                feedUrl: feed.feedUrl,
-                favicon: faviconUrl
-            li = generateFeed(f)
-            $("#sub-tree-item-0-main ul:first").append(li)
-
-            feeds.push(f)
-            localStorage.setItem("feeds", JSON.stringify(feeds))
+        feeds.push(f)
+        localStorage.setItem("feeds", JSON.stringify(feeds))
 
 saveFavicon = (faviconUrl, domainName, cb) ->
     xhr = new XMLHttpRequest()
@@ -200,7 +197,7 @@ generateFeed = (feed) ->
     li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(%s); background-size:16px 16px" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', feed.feedUrl, feed.favicon, feed.title))
     li.find("a:first").click ->
         if localStorage.getItem(feed.feedUrl) == null
-            refreshFeed(feed.feedUrl)
+            refreshFeed feed.feedUrl, (feed, faviconUrl) -> showContent(feed.feedUrl)
         else
             showContent(feed.feedUrl)
     return li
@@ -294,15 +291,14 @@ toggleMenu = (menu) ->
     else
         menu.css("display", "block")
 
-refreshFeed = (feedUrl) ->
+refreshFeed = (feedUrl, cb) ->
     getJsonFeed feedUrl, (feed) ->
         localStorage.setItem(feedUrl, JSON.stringify(feed))
 
         domainName = feed.link.split("/")[2]
         url = "http://" + domainName + "/favicon.ico"
         saveFavicon url, domainName, (faviconUrl) ->
-            return
-        showContent(feed.feedUrl)
+            cb(feed, faviconUrl)
 
 importFromOpml = (evt) ->
     file = evt.target.files[0]
@@ -326,7 +322,7 @@ importFromOpml = (evt) ->
                     url = "http://" + domainName + "/favicon.ico"
                     saveFavicon url, domainName, (faviconUrl) ->
                         f.favicon = faviconUrl
-                        #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
+                        getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
                         li = generateFeed(f)
                         $("#sub-tree-item-0-main ul:first").append(li)
                         feeds.push(f)
@@ -393,7 +389,7 @@ $ ->
 
     $("#add-feed").on 'click', addFeed
     $(".folder-toggle").click -> toggle($(this).parent())
-    $("#viewer-refresh").click -> refreshFeed(currentFeedUrl)
+    $("#viewer-refresh").click -> refreshFeed currentFeedUrl, (feed, favcionUrl) -> showContent(feed.feedUrl)
     $('#opml-file').change -> importFromOpml(event)
     $("#lhn-selectors-minimize").click -> $("#lhn-selectors").toggleClass("section-minimized")
     $("#lhn-recommendations-minimize").click -> $("#lhn-recommendations").toggleClass("section-minimized")
