@@ -1,10 +1,10 @@
 
 feeds = JSON.parse(localStorage.getItem("feeds")) || []
 currentFeedUrl = ""
+fs = ""
 
 generateOverview = () ->
-  item = '
-    <div class="overview-segment overview-stream" id="">
+  item = '<div class="overview-segment overview-stream" id="">
       <div class="overview-header">
         <span class="title">
           <a class="sub-link" href="#" id="" target="_blank">LinuxTOY<span class="unread"><span class="unread">(31)</span></span></a>
@@ -103,6 +103,29 @@ showContent = (feedUrl) ->
     $("#stream-prefs-menu").click -> showMenu(feedUrl)
     currentFeedUrl = feedUrl
 
+errorHandler = (e) ->
+    msg = ""
+    switch  e.code
+        when FileError.QUOTA_EXCEEDED_ERR
+            msg = 'QUOTA_EXCEEDED_ERR'
+            break
+        when FileError.NOT_FOUND_ERR
+            msg = 'NOT_FOUND_ERR'
+            break
+        when FileError.SECURITY_ERR
+            msg = 'SECURITY_ERR'
+            break
+        when FileError.INVALID_MODIFICATION_ERR
+            msg = 'INVALID_MODIFICATION_ERR'
+            break
+        when FileError.INVALID_STATE_ERR
+            msg = 'INVALID_STATE_ERR'
+            break
+        else
+            msg = 'Unknown Error'
+            break
+    alert msg
+
 addFeed = () ->
     url = $("#quickadd").val()
     if url.indexOf("http://") != 0
@@ -117,16 +140,44 @@ addFeed = () ->
         $("#quick-add-bubble-holder").toggleClass("hidden")
 
         localStorage.setItem(url, JSON.stringify(feed))
-        f =
-            title:   feed.title,
-            type:    "rss",
-            feedUrl: feed.feedUrl,
-            favicon: getFavicon(feed.link)
-        li = generateFeed(f)
-        $("#sub-tree-item-0-main ul:first").append(li)
 
-        feeds.push(f)
-        localStorage.setItem("feeds", JSON.stringify(feeds))
+        saveFavicon feed.link, (faviconUrl) ->
+            f =
+                title:   feed.title,
+                type:    "rss",
+                feedUrl: feed.feedUrl,
+                favicon: faviconUrl
+            li = generateFeed(f)
+            $("#sub-tree-item-0-main ul:first").append(li)
+
+            feeds.push(f)
+            localStorage.setItem("feeds", JSON.stringify(feeds))
+
+saveFavicon = (url, cb) ->
+    domainName = url.split("/")[2]
+    faviconUrl = "http://" + domainName + "/favicon.ico"
+
+    xhr = new XMLHttpRequest()
+    xhr.open('GET', faviconUrl, true)
+    xhr.responseType = 'blob'
+    xhr.onload = (e) ->
+        if this.status != 200
+            console.log "error: status:" + this.status
+
+        fs.root.getFile domainName, {create: true}, (fileEntry) ->
+            #fileEntry.isFile == true
+            #fileEntry.name == 'log-f-api.txt'
+            #fileEntry.fullPath == '/log-f-api.txt'
+            fileEntry.createWriter (fileWriter) ->
+                fileWriter.onwriteend = (e) ->
+                    console.log('Write completed.')
+                    cb(fileEntry.toURL())
+                fileWriter.onerror = (e) ->
+                    console.log('Write failed:' + e.toString())
+                fileWriter.write(xhr.response)
+            , errorHandler
+        , errorHandler
+    xhr.send()
 
 getJsonFeed = (url, cb) ->
     #jQuery.getFeed({
@@ -237,6 +288,11 @@ removeFeed = () ->
             $("#stream-prefs-menu").click()
             return
 
+removeAllFeeds = () ->
+    for feed in feeds
+        localStorage.removeItem(feed.feedUrl)
+    localStorage.setItem("feeds", "[]")
+
 toggleMenu = (menu) ->
     if menu.css("display") == "block"
         menu.css("display", "none")
@@ -264,37 +320,44 @@ importFromOpml = (evt) ->
                 feedUrl: outline.attr("xmlUrl"),
 
             if outline.attr("type") == "rss"
-                f.favicon = getFavicon(outline.attr("htmlUrl"))
-                #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
-                li = generateFeed(f)
+                wrap_fun = (outline, f) ->
+                    saveFavicon outline.attr("htmlUrl"), (faviconUrl) ->
+                        f.favicon = faviconUrl
+                        #getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
+                        li = generateFeed(f)
+                        $("#sub-tree-item-0-main ul:first").append(li)
+                        feeds.push(f)
+                        localStorage.setItem("feeds", JSON.stringify(feeds))
+                wrap_fun(outline, f)
             else
                 f.item = []
+                folder = generateFolder(f)
                 for sub_outline_str in outline.children()
                     sub_outline = $(sub_outline_str)
-                    sub_f =
-                        title: sub_outline.attr("title"),
-                        type: sub_outline.attr("type") || "folder"
-                        feedUrl: sub_outline.attr("xmlUrl"),
-                        favicon: getFavicon(sub_outline.attr("htmlUrl"))
+                    wrap_fun = (sub_outline, f) ->
+                        saveFavicon sub_outline.attr("htmlUrl"), (faviconUrl) ->
+                            sub_f =
+                                title: sub_outline.attr("title"),
+                                type: sub_outline.attr("type") || "folder"
+                                feedUrl: sub_outline.attr("xmlUrl"),
+                                favicon: faviconUrl
 
-                    f.item.push(sub_f)
-                li = generateFolder(f)
-
-            $("#sub-tree-item-0-main ul:first").append(li)
-
-            feeds.push(f)
-            localStorage.setItem("feeds", JSON.stringify(feeds))
+                            f.item.push(sub_f)
+                            ul = folder.find("ul:first")
+                            ul.append(generateFeed(sub_f))
+                    wrap_fun(sub_outline, f)
+                $("#sub-tree-item-0-main ul:first").append(folder)
+                feeds.push(f)
+                localStorage.setItem("feeds", JSON.stringify(feeds))
 
     reader.readAsText(file)
 
-getFavicon = (url) -> "chrome://favicon/http://#{url.split("/")[2]}"
-    #faviconUrl = "#{url}/favicon.ico"
-    #cb(faviconUrl)
-    #reader = new FileReader()
-    #reader.onload = (oFREvent) ->
-    #    imgUrl = oFREvent.target.result
-    #    cb(imgUrl)
-    #reader.readAsDataURL(faviconUrl)
+getFavicon = (url, cb) ->
+    domainName = url.split("/")[2]
+    fs.root.getFile domainName, {}, (fileEntry) ->
+        alert fileEntry.toURL()
+        cb(fileEntry.toURL())
+    , errorHandler
 
 showSettingsPage = () ->
     $("body").toggleClass("settings")
@@ -302,6 +365,9 @@ showSettingsPage = () ->
     $("#nav").toggle()
     $("#chrome").toggle()
     $("#settings-button-menu").toggle()
+
+onInitFs = (filesystem) ->
+    fs = filesystem
 
 $ ->
     # Event bindding for quick add
@@ -330,3 +396,6 @@ $ ->
     setInterval auto_height, 200
 
     init()
+
+    window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem
+    window.requestFileSystem window.TEMPORARY, 1024 * 1024, onInitFs, errorHandler
