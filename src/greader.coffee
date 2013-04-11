@@ -3,6 +3,7 @@ THREE_COLUMN_VIEW = 0
 feeds = JSON.parse(localStorage.getItem("feeds")) || []
 currentFeedUrl = ""
 fs = ""
+debug_var = ""
 
 generateOverview = () ->
   item = '<div class="overview-segment overview-stream" id="">
@@ -141,7 +142,6 @@ addFeed = () ->
         $("#quick-add-bubble-holder").toggleClass("hidden")
 
         localStorage.setItem(url, JSON.stringify(feed))
-
         domainName = feed.link.split("/")[2]
         url = "http://" + domainName + "/favicon.ico"
         saveFavicon url, domainName, (faviconUrl) ->
@@ -160,6 +160,10 @@ saveFavicon = (faviconUrl, domainName, cb) ->
     xhr = new XMLHttpRequest()
     xhr.open('GET', faviconUrl, true)
     xhr.responseType = 'blob'
+
+    xhr.onerror = () ->
+        cb("img/default.gif")
+
     xhr.onload = (e) ->
         if this.status != 200 or xhr.response.size == 0
             saveFavicon("img/default.gif", domainName, cb)
@@ -402,7 +406,7 @@ $ ->
 
     # html5 file system
     window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem
-    window.requestFileSystem window.TEMPORARY, 1024 * 1024, (filesystem) ->
+    window.requestFileSystem window.TEMPORARY, 10*1024*1024, (filesystem) ->
         fs = filesystem
     , errorHandler
 
