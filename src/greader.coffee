@@ -1,4 +1,5 @@
 
+THREE_COLUMN_VIEW = 0
 feeds = JSON.parse(localStorage.getItem("feeds")) || []
 currentFeedUrl = ""
 fs = ""
@@ -163,13 +164,12 @@ saveFavicon = (faviconUrl, domainName, cb) ->
         if this.status != 200 or xhr.response.size == 0
             saveFavicon("img/default.gif", domainName, cb)
         else
-            fs.root.getFile domainName, {create: true}, (fileEntry) ->
+            fs.root.getFile domainName+".ico", {create: true}, (fileEntry) ->
                 #fileEntry.isFile == true
                 #fileEntry.name == 'log-f-api.txt'
                 #fileEntry.fullPath == '/log-f-api.txt'
                 fileEntry.createWriter (fileWriter) ->
                     fileWriter.onwriteend = (e) ->
-                        console.log('Write completed.')
                         cb(fileEntry.toURL())
                     fileWriter.onerror = (e) ->
                         console.log('Write failed:' + e.toString())
@@ -200,14 +200,6 @@ generateFeed = (feed) ->
         else
             showContent(feed.feedUrl)
     return li
-
-init = () ->
-    feed_ul = $("#sub-tree-item-0-main ul:first")
-    for item in feeds
-        if item.type == "rss"
-            feed_ul.append(generateFeed(item))
-        else
-            feed_ul.append(generateFolder(item))
 
 toggle = (obj) ->
     obj.toggleClass("collapsed")
@@ -363,8 +355,7 @@ importFromOpml = (evt) ->
 
 getFavicon = (url, cb) ->
     domainName = url.split("/")[2]
-    fs.root.getFile domainName, {}, (fileEntry) ->
-        alert fileEntry.toURL()
+    fs.root.getFile domainName+".ico", {}, (fileEntry) ->
         cb(fileEntry.toURL())
     , errorHandler
 
@@ -375,8 +366,21 @@ showSettingsPage = () ->
     $("#chrome").toggle()
     $("#settings-button-menu").toggle()
 
-onInitFs = (filesystem) ->
-    fs = filesystem
+threeColumnView = () ->
+    THREE_COLUMN_VIEW = 1
+    $("head").append("<link rel='stylesheet' href='css/3-column.css' type='text/css' media='screen' />")
+    auto_height()
+
+# Auto fix height
+auto_height = () ->
+    $section = $('#scrollable-sections')
+    $section.css height: $(window).height() - $section.offset().top - 10
+
+    $viewer = $('#viewer-entries-container')
+    $viewer.css height: $(window).height() - $viewer.offset().top - 10
+
+    if THREE_COLUMN_VIEW
+        $('#current-entry .entry-container').css height: parseInt($viewer.css("height"))-20
 
 $ ->
     # Event bindding for quick add
@@ -393,18 +397,22 @@ $ ->
     $(".settings-button-container").click -> $("#settings-button-menu").toggle()
     $("#settings-button-menu").children().eq(5).on "click", showSettingsPage
 
-    # Auto fix height
-    auto_height = () ->
-      $section = $('#scrollable-sections')
-      $section.css height: $(window).height() - $section.offset().top - 10
-
-      $viewer  = $('#viewer-entries-container')
-      $viewer.css height: $(window).height() - $viewer.offset().top - 10
-
     auto_height()
     setInterval auto_height, 200
 
-    init()
-
+    # html5 file system
     window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem
-    window.requestFileSystem window.TEMPORARY, 1024 * 1024, onInitFs, errorHandler
+    window.requestFileSystem window.TEMPORARY, 1024 * 1024, (filesystem) ->
+        fs = filesystem
+    , errorHandler
+
+    # build subscription tree
+    feed_ul = $("#sub-tree-item-0-main ul:first")
+    for item in feeds
+        if item.type == "rss"
+            feed_ul.append(generateFeed(item))
+        else
+            feed_ul.append(generateFolder(item))
+
+    # 3-column view
+    threeColumnView()
