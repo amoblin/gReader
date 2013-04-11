@@ -333,7 +333,7 @@ importFromOpml = (evt) ->
                 folder = generateFolder(f)
                 for sub_outline_str in outline.children()
                     sub_outline = $(sub_outline_str)
-                    wrap_fun = (sub_outline, f) ->
+                    wrap_fun = (sub_outline, folder, f) ->
                         domainName = sub_outline.attr("htmlUrl").split("/")[2]
                         url = "http://" + domainName + "/favicon.ico"
                         saveFavicon url, domainName, (faviconUrl) ->
@@ -346,7 +346,7 @@ importFromOpml = (evt) ->
                             f.item.push(sub_f)
                             ul = folder.find("ul:first")
                             ul.append(generateFeed(sub_f))
-                    wrap_fun(sub_outline, f)
+                    wrap_fun(sub_outline, folder, f)
                 $("#sub-tree-item-0-main ul:first").append(folder)
                 feeds.push(f)
                 localStorage.setItem("feeds", JSON.stringify(feeds))
