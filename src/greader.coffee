@@ -1,6 +1,6 @@
 
 THREE_COLUMN_VIEW = 0
-feeds = JSON.parse(localStorage.getItem("feeds")) || []
+subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || []
 currentFeedUrl = ""
 fs = ""
 debug_var = ""
@@ -150,10 +150,16 @@ addFeed = () ->
         $("#quick-add-bubble-holder").toggleClass("show")
         $("#quick-add-bubble-holder").toggleClass("hidden")
 
-        feeds.push(f)
-        localStorage.setItem("feeds", JSON.stringify(feeds))
+        subscriptions.push(f)
+        localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
 
 saveFavicon = (faviconUrl, domainName, cb) ->
+    #$.ajax
+    #    url: faviconUrl
+    #    dataType: 'blob'
+    #.done (data) ->
+    #    alert "succeed"
+
     xhr = new XMLHttpRequest()
     xhr.open('GET', faviconUrl, true)
     xhr.responseType = 'blob'
@@ -272,18 +278,18 @@ showMenu = (url) ->
 
 removeFeed = () ->
     localStorage.removeItem(currentFeedUrl)
-    for feed in feeds
+    for feed in subscriptions
         if feed.feedUrl == currentFeedUrl
-            feeds.splice(feeds.indexOf(feed), 1)
-            localStorage.setItem("feeds", JSON.stringify(feeds))
+            subscriptions.splice(subscriptions.indexOf(feed), 1)
+            localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
             $("#sub-tree-item-0-main ul:first li a[title='#{currentFeedUrl}']").parent().remove()
             $("#stream-prefs-menu").click()
             return
 
 removeAllFeeds = () ->
-    for feed in feeds
+    for feed in subscriptions
         localStorage.removeItem(feed.feedUrl)
-    localStorage.setItem("feeds", "[]")
+    localStorage.setItem("subscriptions", "[]")
 
 toggleMenu = (menu) ->
     if menu.css("display") == "block"
@@ -325,8 +331,8 @@ importFromOpml = (evt) ->
                         getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
                         li = generateFeed(f)
                         $("#sub-tree-item-0-main ul:first").append(li)
-                        feeds.push(f)
-                        localStorage.setItem("feeds", JSON.stringify(feeds))
+                        subscriptions.push(f)
+                        localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
                 wrap_fun(outline, f)
             else
                 f.item = []
@@ -348,8 +354,8 @@ importFromOpml = (evt) ->
                             ul.append(generateFeed(sub_f))
                     wrap_fun(sub_outline, folder, f)
                 $("#sub-tree-item-0-main ul:first").append(folder)
-                feeds.push(f)
-                localStorage.setItem("feeds", JSON.stringify(feeds))
+                subscriptions.push(f)
+                localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
 
     reader.readAsText(file)
 
@@ -396,6 +402,7 @@ $ ->
     $("#lhn-subscriptions-minimize").click -> $("#lhn-subscriptions").toggleClass("section-minimized")
     $(".settings-button-container").click -> $("#settings-button-menu").toggle()
     $("#settings-button-menu").children().eq(5).on "click", showSettingsPage
+    $("#googleConnector").on "click", login2
 
     auto_height()
     setInterval auto_height, 200
@@ -407,12 +414,13 @@ $ ->
     , errorHandler
 
     # build subscription tree
-    feed_ul = $("#sub-tree-item-0-main ul:first")
-    for item in feeds
-        if item.type == "rss"
-            feed_ul.append(generateFeed(item))
-        else
-            feed_ul.append(generateFolder(item))
+    #feed_ul = $("#sub-tree-item-0-main ul:first")
+    #for item in subscriptions
+    #    if item.type == "rss"
+    #        feed_ul.append(generateFeed(item))
+    #    else
+    #        feed_ul.append(generateFolder(item))
 
     # 3-column view
     threeColumnView()
+    importFromGoogleReader(subscriptions)

@@ -9,10 +9,10 @@
         "js": ["js/content.js"]
     }],
     "background": {
-        "scripts": ["js/background.js"]
+        "page": "background.html"
     },
     "permissions": [
-        "tabs", "notifications", "http://*/*", "chrome://favicon/"
+        "tabs", "notifications", "http://*/*", "chrome://favicon/", "https://*/*"
     ],
     "browser_action": {
         "default_icon": "img/greader-32.png",
