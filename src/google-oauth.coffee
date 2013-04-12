@@ -1,5 +1,6 @@
 
 bp = chrome.extension.getBackgroundPage()
+debug_var = ""
 
 OAUTHURL    =   'https://accounts.google.com/o/oauth2/auth?'
 VALIDURL    =   'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
@@ -86,26 +87,31 @@ startLogoutPolling = () ->
 
 # use by chrome extension
 
-importFromGoogleReader = (subscriptions) ->
-    local_subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || []
+importFromGoogleReader = (subs) ->
+    debug_var = subs
     feed_ul = $("#sub-tree-item-0-main ul:first")
     tmp_dict = {}
-    for item in subscriptions
+
+    for item in subs
         folders = []
         item.type = "rss"
         item.feedUrl = item.id.substring(5)
 
         wrap_fun = (item, folders) ->
-            domainName = item.htmlUrl.split("/")[2]
+            if item.htmlUrl != undefined
+                domainName = item.htmlUrl.split("/")[2]
+            else
+                domainName = item.feedUrl.split("/")[3]
             url = "http://" + domainName + "/favicon.ico"
+
             saveFavicon url, domainName, (faviconUrl) ->
                 item.favicon = faviconUrl
                 getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
 
                 for folder in folders
                     folder.append(generateFeed(item))
-                local_subscriptions.push(item)
-                localStorage.setItem("subscriptions", JSON.stringify(local_subscriptions))
+                subscriptions.push(item)
+                localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
 
         if item.categories.length == 0
             folders.push(feed_ul)
@@ -117,8 +123,8 @@ importFromGoogleReader = (subscriptions) ->
                         type: "folder"
                         title: cate.label
                         item: []
-                    local_subscriptions.push(folder)
-                    localStorage.setItem("subscriptions", JSON.stringify(local_subscriptions))
+                    subscriptions.push(folder)
+                    localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
                     tmp_dict[folder.title] = folder
                 else
                     folder = tmp_dict[cate.label]

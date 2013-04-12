@@ -419,9 +419,9 @@ $ ->
     # build subscription tree
     feed_ul = $("#sub-tree-item-0-main ul:first")
     for item in subscriptions
-        if item.type == "rss"
+        if item.type == "rss" and (item.categories == undefined || item.categories.length == 0)
             feed_ul.append(generateFeed(item))
-        else
+        if item.type == "folder"
             feed_ul.append(generateFolder(item))
 
     # 3-column view
