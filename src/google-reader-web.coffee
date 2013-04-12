@@ -1,5 +1,4 @@
 
-bp = chrome.extension.getBackgroundPage()
 debug_var = ""
 
 OAUTHURL    =   'https://accounts.google.com/o/oauth2/auth?'
@@ -49,8 +48,9 @@ validateToken = (token) ->
         dataType: "jsonp"
 
 getSubscription = () ->
-    $.ajax
+    $.getJSON
         url: 'https://www.google.com/reader/api/0/subscription/list?output=json'
+        dataType: "jsonp"
     .done (data) ->
         console.log(data)
 
@@ -84,71 +84,3 @@ startLogoutPolling = () ->
     $('#uName').text('Welcome ')
     $('#imgHolder').attr('src', 'none.jpg')
 
-
-# use by chrome extension
-
-importFromGoogleReader = (subs) ->
-    debug_var = subs
-    feed_ul = $("#sub-tree-item-0-main ul:first")
-    tmp_dict = {}
-
-    for item in subs
-        folders = []
-        item.type = "rss"
-        item.feedUrl = item.id.substring(5)
-
-        wrap_fun = (item, folders) ->
-            if item.htmlUrl != undefined
-                domainName = item.htmlUrl.split("/")[2]
-            else
-                domainName = item.feedUrl.split("/")[3]
-            url = "http://" + domainName + "/favicon.ico"
-
-            saveFavicon url, domainName, (faviconUrl) ->
-                item.favicon = faviconUrl
-                getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
-
-                for folder in folders
-                    folder.append(generateFeed(item))
-                subscriptions.push(item)
-                localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
-
-        if item.categories.length == 0
-            folders.push(feed_ul)
-        else
-            for cate in item.categories
-                folder = ""
-                if tmp_dict[cate.label] == undefined
-                    folder =
-                        type: "folder"
-                        title: cate.label
-                        item: []
-                    subscriptions.push(folder)
-                    localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
-                    tmp_dict[folder.title] = folder
-                else
-                    folder = tmp_dict[cate.label]
-
-                folder.item.push(item)
-
-                folder_li = generateFolder(folder)
-                feed_ul.append(folder_li)
-
-                folders.push(folder_li.find("ul:first"))
-
-        wrap_fun(item, folders)
-
-callback = (resp, xhr) ->
-    importFromGoogleReader(JSON.parse(xhr.response).subscriptions)
-
-onAuthorized = () ->
-    url = 'https://www.google.com/reader/api/0/subscription/list'
-    request =
-        method: 'GET',
-        parameters: {'output': 'json'}
-
-    #发送：GET https://www.google.com/reader/api/0/subscription/list?output=json
-    bp.oauth.sendSignedRequest(url, callback, request)
-
-login2 = () ->
-    bp.oauth.authorize(onAuthorized)

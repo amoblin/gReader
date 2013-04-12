@@ -194,13 +194,12 @@ getJsonFeed = (url, cb) ->
     #    success: (feed) ->
     #        alert(feed.title)
     #})
-    $.ajax({
+    $.ajax
         url: 'https://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=50&callback=?&q=' + encodeURIComponent(url),
         dataType: 'json',
         success: (data) ->
             feed = data.responseData.feed
             cb(feed)
-    })
 
 generateFeed = (feed) ->
     li = $(sprintf('<li class="sub unselectable expanded unread">\n<div class="toggle sub-toggle toggle-d-2 hidden"></div>\n<a class="link" title="%s">\n <div style="background-image: url(%s); background-size:16px 16px" class="icon sub-icon icon-d-2 favicon">\n </div>\n <div class="name-text sub-name-text name-text-d-2 name sub-name name-d-2 name-unread">%s</div>\n <div class="unread-count sub-unread-count unread-count-d-2"></div>\n <div class="tree-item-action-container">\n <div class="action tree-item-action section-button section-menubutton goog-menu-button"></div>\n </div>\n </a>\n </li>', feed.feedUrl, feed.favicon, feed.title))
@@ -390,6 +389,57 @@ auto_height = () ->
 
     if THREE_COLUMN_VIEW
         $('#current-entry .entry-container').css height: parseInt($viewer.css("height"))-20
+
+importFromGoogleReader = (subs) ->
+    debug_var = subs
+    feed_ul = $("#sub-tree-item-0-main ul:first")
+    tmp_dict = {}
+
+    for item in subs
+        folders = []
+        item.type = "rss"
+        item.feedUrl = item.id.substring(5)
+
+        wrap_fun = (item, folders) ->
+            if item.htmlUrl != undefined
+                domainName = item.htmlUrl.split("/")[2]
+            else
+                domainName = item.feedUrl.split("/")[3]
+            url = "http://" + domainName + "/favicon.ico"
+
+            saveFavicon url, domainName, (faviconUrl) ->
+                item.favicon = faviconUrl
+                getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
+
+                for folder in folders
+                    folder.append(generateFeed(item))
+                subscriptions.push(item)
+                localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
+
+        if item.categories.length == 0
+            folders.push(feed_ul)
+        else
+            for cate in item.categories
+                folder = ""
+                if tmp_dict[cate.label] == undefined
+                    folder =
+                        type: "folder"
+                        title: cate.label
+                        item: []
+                    subscriptions.push(folder)
+                    localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
+                    tmp_dict[folder.title] = folder
+                else
+                    folder = tmp_dict[cate.label]
+
+                folder.item.push(item)
+
+                folder_li = generateFolder(folder)
+                feed_ul.append(folder_li)
+
+                folders.push(folder_li.find("ul:first"))
+
+        wrap_fun(item, folders)
 
 $ ->
     # Event bindding for quick add
