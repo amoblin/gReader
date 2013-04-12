@@ -89,21 +89,48 @@ startLogoutPolling = () ->
 importFromGoogleReader = (subscriptions) ->
     local_subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || []
     feed_ul = $("#sub-tree-item-0-main ul:first")
+    tmp_dict = {}
     for item in subscriptions
-        if item.categories.length == 0
-            item.type = "rss"
-            item.feedUrl = item.id.substring(5)
+        folders = []
+        item.type = "rss"
+        item.feedUrl = item.id.substring(5)
 
-            wrap_fun = (item) ->
-                domainName = item.htmlUrl.split("/")[2]
-                url = "http://" + domainName + "/favicon.ico"
-                saveFavicon url, domainName, (faviconUrl) ->
-                    item.favicon = faviconUrl
-                    getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
-                    feed_ul.append(generateFeed(item))
-                    local_subscriptions.push(item)
+        wrap_fun = (item, folders) ->
+            domainName = item.htmlUrl.split("/")[2]
+            url = "http://" + domainName + "/favicon.ico"
+            saveFavicon url, domainName, (faviconUrl) ->
+                item.favicon = faviconUrl
+                getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
+
+                for folder in folders
+                    folder.append(generateFeed(item))
+                local_subscriptions.push(item)
+                localStorage.setItem("subscriptions", JSON.stringify(local_subscriptions))
+
+        if item.categories.length == 0
+            folders.push(feed_ul)
+        else
+            for cate in item.categories
+                folder = ""
+                if tmp_dict[cate.label] == undefined
+                    folder =
+                        type: "folder"
+                        title: cate.label
+                        item: []
+                    local_subscriptions.push(folder)
                     localStorage.setItem("subscriptions", JSON.stringify(local_subscriptions))
-            wrap_fun(item)
+                    tmp_dict[folder.title] = folder
+                else
+                    folder = tmp_dict[cate.label]
+
+                folder.item.push(item)
+
+                folder_li = generateFolder(folder)
+                feed_ul.append(folder_li)
+
+                folders.push(folder_li.find("ul:first"))
+
+        wrap_fun(item, folders)
 
 callback = (resp, xhr) ->
     importFromGoogleReader(JSON.parse(xhr.response).subscriptions)

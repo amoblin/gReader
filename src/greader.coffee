@@ -23,7 +23,10 @@ generateOverview = () ->
     </div>'
 
 generateFolder = (dict) ->
-    folder = $(sprintf('<li class="folder unselectable collapsed unread" id="sub-tree-item-9-main">
+    result = $("#sub-tree").find("li ul li a div:contains('#{dict.title}'):first")
+    if result.length > 0
+        return result.parent().parent()
+    folder = $(sprintf('<li class="folder unselectable collapsed unread">
                                             <div class="toggle folder-toggle toggle-d-1"></div>
                                             <a class="link" href="#"><div class="icon folder-icon icon-d-1" id="sub-tree-item-9-icon"></div><div class="name-text folder-name-text name-text-d-1 name folder-name name-d-1 name-unread" id="sub-tree-item-9-name">%s</div><div class="unread-count folder-unread-count unread-count-d-1" id="sub-tree-item-9-unread-count"></div><div class="tree-item-action-container"><div id="sub-tree-item-9-action" class="action tree-item-action section-button section-menubutton goog-menu-button"></div></div></a>
                                             <ul></ul></li>', dict.title))
@@ -388,12 +391,6 @@ auto_height = () ->
     if THREE_COLUMN_VIEW
         $('#current-entry .entry-container').css height: parseInt($viewer.css("height"))-20
 
-initFromGoogleReader = () ->
-    feed_ul = $("#sub-tree-item-0-main ul:first")
-    for item in subscriptions
-        if item.categories.length == 0
-            feed_ul.append(generateFeed(item))
-
 $ ->
     # Event bindding for quick add
     $("#lhn-add-subscription").on 'click', toggleAddBox
@@ -420,13 +417,12 @@ $ ->
     , errorHandler
 
     # build subscription tree
-    #feed_ul = $("#sub-tree-item-0-main ul:first")
-    #for item in subscriptions
-    #    if item.type == "rss"
-    #        feed_ul.append(generateFeed(item))
-    #    else
-    #        feed_ul.append(generateFolder(item))
+    feed_ul = $("#sub-tree-item-0-main ul:first")
+    for item in subscriptions
+        if item.type == "rss"
+            feed_ul.append(generateFeed(item))
+        else
+            feed_ul.append(generateFolder(item))
 
     # 3-column view
     threeColumnView()
-    initFromGoogleReader(subscriptions)
