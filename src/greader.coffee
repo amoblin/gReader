@@ -309,6 +309,7 @@ refreshFeed = (feedUrl, cb) ->
 importFromOpml = (evt) ->
     file = evt.target.files[0]
     reader = new FileReader()
+    ul = $("#sub-tree-item-0-main ul:first")
 
     reader.onload =  (oFREvent) ->
         opml = $(oFREvent.target.result)
@@ -329,8 +330,7 @@ importFromOpml = (evt) ->
                     saveFavicon url, domainName, (faviconUrl) ->
                         f.favicon = faviconUrl
                         getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
-                        li = generateFeed(f)
-                        $("#sub-tree-item-0-main ul:first").append(li)
+                        ul.append(generateFeed(f))
                         subscriptions.push(f)
                         localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
                 wrap_fun(outline, f)
@@ -388,6 +388,12 @@ auto_height = () ->
     if THREE_COLUMN_VIEW
         $('#current-entry .entry-container').css height: parseInt($viewer.css("height"))-20
 
+initFromGoogleReader = () ->
+    feed_ul = $("#sub-tree-item-0-main ul:first")
+    for item in subscriptions
+        if item.categories.length == 0
+            feed_ul.append(generateFeed(item))
+
 $ ->
     # Event bindding for quick add
     $("#lhn-add-subscription").on 'click', toggleAddBox
@@ -423,4 +429,4 @@ $ ->
 
     # 3-column view
     threeColumnView()
-    importFromGoogleReader(subscriptions)
+    initFromGoogleReader(subscriptions)

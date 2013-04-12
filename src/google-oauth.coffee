@@ -87,18 +87,26 @@ startLogoutPolling = () ->
 # use by chrome extension
 
 importFromGoogleReader = (subscriptions) ->
+    local_subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || []
     feed_ul = $("#sub-tree-item-0-main ul:first")
     for item in subscriptions
         if item.categories.length == 0
             item.type = "rss"
             item.feedUrl = item.id.substring(5)
-            feed_ul.append(generateFeed(item))
+
+            wrap_fun = (item) ->
+                domainName = item.htmlUrl.split("/")[2]
+                url = "http://" + domainName + "/favicon.ico"
+                saveFavicon url, domainName, (faviconUrl) ->
+                    item.favicon = faviconUrl
+                    getJsonFeed url, (feed) -> localStorage.setItem(url, JSON.stringify(feed))
+                    feed_ul.append(generateFeed(item))
+                    local_subscriptions.push(item)
+                    localStorage.setItem("subscriptions", JSON.stringify(local_subscriptions))
+            wrap_fun(item)
 
 callback = (resp, xhr) ->
-    #... 处理文本响应 ...
-    localStorage.setItem("subscriptions", JSON.stringify(JSON.parse(xhr.response).subscriptions))
-    subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || []
-    importFromGoogleReader(subscriptions)
+    importFromGoogleReader(JSON.parse(xhr.response).subscriptions)
 
 onAuthorized = () ->
     url = 'https://www.google.com/reader/api/0/subscription/list'
