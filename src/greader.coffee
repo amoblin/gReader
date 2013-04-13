@@ -4,6 +4,7 @@ subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || []
 currentFeedUrl = ""
 fs = ""
 debug_var = ""
+start_folder = "apple"
 
 generateOverview = () ->
   item = '<div class="overview-segment overview-stream" id="">
@@ -34,9 +35,9 @@ generateFolder = (dict) ->
     for item in dict.item
         ul.append(generateFeed(item))
     folder.find(".folder-toggle").click -> toggle($(this).parent())
+    folder.find("a:first").click -> showFolderContent(dict)
+    #storage.setItem(dict.title, JSON.stringify(dict))
     return folder
-    #feeds[k] = feed
-    #storage.setItem("feeds", JSON.stringify(feeds))
 
 toggleAddBox = () ->
     btnOffset = $(@).offset()
@@ -77,17 +78,40 @@ showDetail = (obj, item) ->
 
 showContent = (feedUrl) ->
     feed = JSON.parse(localStorage.getItem(feedUrl))
+    $("#entries").addClass("single-source")
     $("#entries").find(".entry").remove()
     $("#title-and-status-holder").css("display", "block")
     $("#chrome-title").html(sprintf('<a target="_blank" href="%s">%s<span class="chevron">»</span></a>', feed.link, feed.title))
     $("#chrome-view-links").css("display", "block")
+
+    $("#stream-prefs-menu").click -> showMenu(feedUrl)
+    currentFeedUrl = feedUrl
+    generateContentList(feed.entries)
+
+showFolderContent = (dict) ->
+    $("#entries").removeClass("single-source")
+    $("#entries").find(".entry").remove()
+    $("#title-and-status-holder").css("display", "block")
+    $("#chrome-title").html(dict.title)
+    $("#chrome-view-links").css("display", "block")
+    #entries = []
+    for item in dict.item
+        if localStorage.getItem(item.feedUrl) == null
+            refreshFeed item.feedUrl, (feed, faviconUrl) ->
+                generateContentList(feed.entries)
+        else
+            #entries.concat(JSON.parse(localStorage.getItem(item.feedUrl)).entries)
+            entries = JSON.parse(localStorage.getItem(item.feedUrl)).entries
+            generateContentList(entries)
+
+generateContentList = (entries) ->
     i = 0
-    for item in feed.entries
+    for item in entries
         dt = new Date(item.publishedDate)
         date = dt.toLocaleTimeString()
 
         link = item.link
-        stitle = feed.title
+        stitle = item.stitle
         title = item.title
         desc = item.contentSnippet
 
@@ -105,8 +129,6 @@ showContent = (feedUrl) ->
         a(div, item)
 
         $("#entries").append(div)
-    $("#stream-prefs-menu").click -> showMenu(feedUrl)
-    currentFeedUrl = feedUrl
 
 errorHandler = (e) ->
     msg = ""
@@ -157,11 +179,14 @@ addFeed = () ->
         localStorage.setItem("subscriptions", JSON.stringify(subscriptions))
 
 saveFavicon = (faviconUrl, domainName, cb) ->
-    #$.ajax
-    #    url: faviconUrl
-    #    dataType: 'blob'
-    #.done (data) ->
-    #    alert "succeed"
+    #$.get
+    #    url: faviconUrl,
+    #    dataType: 'blob',
+    #    success: (data) ->
+    #        #if this.status != 200 or xhr.response.size == 0
+    #        #    saveFavicon("img/default.gif", domainName, cb)
+    #        #else
+    #        alert "succeed"
 
     xhr = new XMLHttpRequest()
     xhr.open('GET', faviconUrl, true)
@@ -199,6 +224,8 @@ getJsonFeed = (url, cb) ->
         dataType: 'json',
         success: (data) ->
             feed = data.responseData.feed
+            for item in feed.entries
+                item.stitle = feed.title
             cb(feed)
 
 generateFeed = (feed) ->
@@ -462,7 +489,7 @@ $ ->
 
     # html5 file system
     window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem
-    window.requestFileSystem window.TEMPORARY, 10*1024*1024, (filesystem) ->
+    window.requestFileSystem window.TEMPORARY, 100*1024*1024, (filesystem) ->
         fs = filesystem
     , errorHandler
 
@@ -472,7 +499,10 @@ $ ->
         if item.type == "rss" and (item.categories == undefined || item.categories.length == 0)
             feed_ul.append(generateFeed(item))
         if item.type == "folder"
-            feed_ul.append(generateFolder(item))
+            f = generateFolder(item)
+            feed_ul.append(f)
+            if item.title == start_folder
+                f.find("a:first").click()
 
     # 3-column view
     threeColumnView()
