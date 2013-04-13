@@ -401,10 +401,14 @@ showSettingsPage = () ->
     $("#chrome").toggle()
     $("#settings-button-menu").toggle()
 
-threeColumnView = () ->
-    THREE_COLUMN_VIEW = 1
-    $("head").append("<link rel='stylesheet' href='css/3-column.css' type='text/css' media='screen' />")
-    auto_height()
+toggleThreeColumnView = () ->
+    if THREE_COLUMN_VIEW == 0
+        THREE_COLUMN_VIEW = 1
+        $("#3-column-css").removeAttr("disabled")
+        auto_height()
+    else
+        THREE_COLUMN_VIEW = 0
+        $("#3-column-css").attr("disabled", "disabled")
 
 # Auto fix height
 auto_height = () ->
@@ -484,6 +488,8 @@ $ ->
     $("#settings-button-menu").children().eq(5).on "click", showSettingsPage
     $("#googleConnector").on "click", login2
 
+    $("#chrome-view-links span div:eq(1)").on "click", toggleThreeColumnView
+
     auto_height()
     setInterval auto_height, 200
 
@@ -505,4 +511,3 @@ $ ->
                 f.find("a:first").click()
 
     # 3-column view
-    threeColumnView()
