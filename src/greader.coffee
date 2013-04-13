@@ -302,7 +302,7 @@ showMenu = (url) ->
             </div>'))
 
     $("body").append(menu)
-    $("#stream-prefs-menu").unbind("click")
+    $("#stream-prefs-menu").unbind "click"
     $("#stream-prefs-menu").click -> toggleMenu(menu)
 
 removeFeed = () ->
