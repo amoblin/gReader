@@ -484,7 +484,7 @@ $ ->
     $("#lhn-selectors-minimize").click -> $("#lhn-selectors").toggleClass("section-minimized")
     $("#lhn-recommendations-minimize").click -> $("#lhn-recommendations").toggleClass("section-minimized")
     $("#lhn-subscriptions-minimize").click -> $("#lhn-subscriptions").toggleClass("section-minimized")
-    $(".settings-button-container").click -> $("#settings-button-menu").toggle()
+    $("#settings-button-container").click -> $("#settings-button-menu").toggle()
     $("#settings-button-menu").children().eq(5).on "click", showSettingsPage
     $("#googleConnector").on "click", login2
 
