@@ -1,4 +1,4 @@
-
+# vim: sw=4 ts=4
 THREE_COLUMN_VIEW = 0
 subscriptions = JSON.parse(localStorage.getItem("subscriptions")) || []
 currentFeedUrl = ""
@@ -404,13 +404,6 @@ getFavicon = (url, cb) ->
         cb(fileEntry.toURL())
     , errorHandler
 
-showSettingsPage = () ->
-    $("body").toggleClass("settings")
-    $("body").append($('<div><iframe id="settings-frame" name="settings-frame" src="settings.html" frameborder="0" scrolling="no" style="height: 600px;" class="loaded"></iframe></div>'))
-    $("#nav").toggle()
-    $("#chrome").toggle()
-    $("#settings-button-menu").toggle()
-
 toggleThreeColumnView = () ->
     if THREE_COLUMN_VIEW == 0
         THREE_COLUMN_VIEW = 1
@@ -482,7 +475,32 @@ importFromGoogleReader = (subs) ->
 
         wrap_fun(item, folders)
 
-$ ->
+do ($ = jQuery) ->
+    # Navigate to settings page
+    showSettingsPage = () ->
+        tpl = '''
+              <div>
+                  <iframe id="settings-frame" name="settings-frame" src="settings.html" 
+                          frameborder="0" scrolling="no" style="height: 600px;" class="loaded">
+                  </iframe>
+              </div>
+              '''
+        console.log tpl
+        $("body").addClass("settings")
+        $("body").append($(tpl))
+        $("#nav").hide()
+        $("#chrome").hide()
+
+        # FIXME: Trigger hide menu event when menu item clicked.
+        $("#settings-button-menu").hide()
+
+    # Navigate content to reader
+    window.showHomePage = () ->
+        $('body').removeClass('settings')
+        $('#settings-frame').hide()
+        $('#nav').show()
+        $('#chrome').show()
+
     # Event bindding for quick add
     $("#lhn-add-subscription").on 'click', toggleAddBox
     $('#quick-add-close').on 'click', toggleAddBox
@@ -494,13 +512,13 @@ $ ->
     $("#lhn-selectors-minimize").click -> $("#lhn-selectors").toggleClass("section-minimized")
     $("#lhn-recommendations-minimize").click -> $("#lhn-recommendations").toggleClass("section-minimized")
     $("#lhn-subscriptions-minimize").click -> $("#lhn-subscriptions").toggleClass("section-minimized")
-    $("#settings-button-container").click -> $("#settings-button-menu").toggle()
-    $("#settings-button-menu").children().eq(5).on "click", showSettingsPage
     $("#googleConnector").on "click", login2
-
     $("#chrome-view-links span div:eq(1)").on "click", toggleThreeColumnView
 
-    auto_height()
+    # Setting menu event bindings
+    $('.settings-button-container').on 'click', () -> $('#settings-button-menu').toggle()
+    $("#settings-button-menu .goog-menuitem-settings").on 'click', showSettingsPage
+
     setInterval auto_height, 200
 
     # html5 file system
