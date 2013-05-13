@@ -540,3 +540,8 @@ do ($ = jQuery) ->
                 f.find("a:first").click()
 
     # 3-column view
+    #
+    if chrome.extension
+        $("#import-data-area").append('<input type="button" id="googleConnector" value="Connect to Google Reader"></input>')
+    else
+        $("#import-data-area").append('<input type="file" name="opml-file" id="opml-file" size="40">')

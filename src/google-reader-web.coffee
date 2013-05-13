@@ -4,8 +4,8 @@ debug_var = ""
 OAUTHURL    =   'https://accounts.google.com/o/oauth2/auth?'
 VALIDURL    =   'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
 SCOPE       =   'https://www.googleapis.com/auth/userinfo.profile https://www.google.com/reader/api'
-#CLIENTID    =   '640115812452.apps.googleusercontent.com'
-CLIENTID    =   '640115812452-mk9muia2ldjp601bumj3mtiaemoce0qc.apps.googleusercontent.com'
+CLIENTID    =   '640115812452.apps.googleusercontent.com'
+#CLIENTID    =   '640115812452-mk9muia2ldjp601bumj3mtiaemoce0qc.apps.googleusercontent.com'
 REDIRECT    =   'http://reader.marboo.biz'
 LOGOUT      =   'http://accounts.google.com/Logout'
 TYPE        =   'token'
@@ -52,7 +52,9 @@ getSubscription = () ->
         url: 'https://www.google.com/reader/api/0/subscription/list?output=json'
         dataType: "jsonp"
     .done (data) ->
+        console.lgo("******")
         console.log(data)
+        importFromGoogleReader(JSON.parse(data).subscriptions)
 
 getUserInfo = () ->
     $.ajax
