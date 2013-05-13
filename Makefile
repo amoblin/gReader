@@ -14,5 +14,5 @@ clean:
 	find . -name .DS_Store|xargs rm -f
 
 web:
-	rm -rf ~/.marboo/source/WebSites/reader.marboo.biz/*
-	cp -r gReader/* ~/.marboo/source/WebSites/reader.marboo.biz
+	rm -rf ~/Dropbox/marboo/WebSites/reader.marboo.biz/*
+	cp -r gReader/* ~/Dropbox/marboo/WebSites/reader.marboo.biz
