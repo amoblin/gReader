@@ -21,5 +21,5 @@ onAuthorized = () ->
         $("#googleConnector").on "click", login2
         $("#googleConnector").attr("value", "Connect to Google Reader")
 
-login2 = () ->
+login = () ->
     bp.oauth.authorize(onAuthorized)

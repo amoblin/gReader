@@ -119,6 +119,7 @@ generateContentList = (entries) ->
         $("#viewer-entries-container").css("display", "block")
         $("#viewer-page-container").css("display", "none")
         div = $(sprintf('<div class="entry entry-%s ril_marked"><div class="collapsed"><div class="entry-icons"><div class="item-star star link unselectable empty"></div></div><div class="entry-date">%s</div><div class="entry-main"><a class="entry-original" target="_blank" href="%s"></a><span class="entry-source-title">%s</span><div class="entry-secondary"><h2 class="entry-title">%s</h2><span class="entry-secondary-snippet"> - <span class="snippet">%s</span></span></div></div></div></div>', i, date, link, stitle, title, desc))
+
         i += 1
         a = (obj, args) ->
             div.find(".collapsed").click -> showDetail(obj, args)
@@ -481,7 +482,7 @@ do ($ = jQuery) ->
         $a = $("<a>从Google Reader导入订阅</a>")
         $a.on "click", -> $("#googleConnector").click()
         $("#import-data-area").append($a)
-        $("#googleConnector").on "click", login2
+        $("#googleConnector").on "click", login
     else
         $("#import-data-area").append('<input type="file" name="opml-file" id="opml-file" size="40" style="position:absolute;opacity:0;filter:alpha(opacity=0);z-index:1000"></input>')
         $a = $("<a>从subscriptions.xml导入订阅</a>")
@@ -556,4 +557,14 @@ do ($ = jQuery) ->
                 f.find("a:first").click()
 
     # 3-column view
-    #
+
+    # keyboard shortcut
+    $("body").bind 'keypress', (e) ->
+        code = if e.keyCode then e.keyCode else e.which
+        console.log(code)
+        if code == 106 then $("#current-entry").next().find(".collapsed").click()
+        if code == 107 then $("#current-entry").prev().find(".collapsed").click()
+        if code == 102
+            $("body").toggleClass("fullscreen")
+            $("body").toggleClass("lhn-hidden")
+
