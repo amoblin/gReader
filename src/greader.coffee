@@ -530,6 +530,11 @@ do ($ = jQuery) ->
     $('.settings-button-container').on 'click', () -> $('#settings-button-menu').toggle()
     $("#settings-button-menu .goog-menuitem-settings").on 'click', showSettingsPage
 
+    $('#quickadd').bind 'keypress', (e) ->
+        code = if e.keyCode then e.keyCode else e.which
+        console.log(code)
+        if code == 13 then $("#add-feed").click()
+
     setInterval auto_height, 200
 
     # html5 file system
