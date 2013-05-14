@@ -476,6 +476,19 @@ importFromGoogleReader = (subs) ->
         wrap_fun(item, folders)
 
 do ($ = jQuery) ->
+    if chrome.extension
+        $("#import-data-area").append('<input type="button" id="googleConnector" size="1" style="position:absolute;opacity:0;filter:alpha(opacity=0);z-index:1000"></input>')
+        $a = $("<a>从Google Reader导入订阅</a>")
+        $a.on "click", -> $("#googleConnector").click()
+        $("#import-data-area").append($a)
+        $("#googleConnector").on "click", login2
+    else
+        $("#import-data-area").append('<input type="file" name="opml-file" id="opml-file" size="40" style="position:absolute;opacity:0;filter:alpha(opacity=0);z-index:1000"></input>')
+        $a = $("<a>从subscriptions.xml导入订阅</a>")
+        $a.on "click", -> $("#opml-file").click()
+        $("#import-data-area").append($a)
+        $('#opml-file').change -> importFromOpml(event)
+
     # Navigate to settings page
     showSettingsPage = () ->
         tpl = '''
@@ -508,11 +521,9 @@ do ($ = jQuery) ->
     $("#add-feed").on 'click', addFeed
     $(".folder-toggle").click -> toggle($(this).parent())
     $("#viewer-refresh").click -> refreshFeed currentFeedUrl, (feed, favcionUrl) -> showContent(feed.feedUrl)
-    $('#opml-file').change -> importFromOpml(event)
     $("#lhn-selectors-minimize").click -> $("#lhn-selectors").toggleClass("section-minimized")
     $("#lhn-recommendations-minimize").click -> $("#lhn-recommendations").toggleClass("section-minimized")
     $("#lhn-subscriptions-minimize").click -> $("#lhn-subscriptions").toggleClass("section-minimized")
-    $("#googleConnector").on "click", login2
     $("#chrome-view-links span div:eq(1)").on "click", toggleThreeColumnView
 
     # Setting menu event bindings
@@ -541,7 +552,3 @@ do ($ = jQuery) ->
 
     # 3-column view
     #
-    if chrome.extension
-        $("#import-data-area").append('<input type="button" id="googleConnector" value="Connect to Google Reader"></input>')
-    else
-        $("#import-data-area").append('<input type="file" name="opml-file" id="opml-file" size="40">')
