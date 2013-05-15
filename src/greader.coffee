@@ -53,6 +53,7 @@ toggleStar = (obj, item) ->
 
 showDetail = (obj, item) ->
     obj.toggleClass("expanded")
+    obj.addClass("read")
 
     if obj.attr("id") != "current-entry"
         if $("#current-entry").hasClass("expanded")
@@ -537,6 +538,9 @@ do ($ = jQuery) ->
         if code == 13 then $("#add-feed").click()
 
     setInterval auto_height, 200
+
+    # UI adjust
+    $("div[role=button]").hover -> $(this).toggleClass("jfk-button-hover")
 
     # html5 file system
     window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem

@@ -3,7 +3,7 @@ debug_var = ""
 
 OAUTHURL    =   'https://accounts.google.com/o/oauth2/auth?'
 VALIDURL    =   'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token='
-SCOPE       =   'https://www.googleapis.com/auth/userinfo.profile https://www.google.com/reader/api'
+SCOPE       =   'https://www.googleapis.com/auth/userinfo.profile https://www.google.com/reader/api https://www.googleapis.com/auth/drive.file'
 CLIENTID    =   '640115812452.apps.googleusercontent.com'
 #CLIENTID    =   '640115812452-mk9muia2ldjp601bumj3mtiaemoce0qc.apps.googleusercontent.com'
 REDIRECT    =   'http://reader.marboo.biz'
