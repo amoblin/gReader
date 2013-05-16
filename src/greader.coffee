@@ -48,8 +48,11 @@ toggleAddBox = () ->
     $('#quickadd').val('').focus()
 
 toggleStar = (obj, item) ->
-    obj.find(".entry-icons div").toggleClass("item-star")
-    obj.find(".entry-icons div").toggleClass("item-star-active")
+    obj.find("div.entry-icons div").toggleClass("item-star")
+    obj.find("div.entry-icons div").toggleClass("item-star-active")
+
+    obj.find("div.entry-actions span:first").toggleClass("item-star")
+    obj.find("div.entry-actions span:first").toggleClass("item-star-active")
 
 showDetail = (obj, item) ->
     obj.toggleClass("expanded")
@@ -123,10 +126,17 @@ generateContentList = (entries) ->
 
         i += 1
         a = (obj, args) ->
-            div.find(".collapsed").click -> showDetail(obj, args)
-            div.find("div.entry-icons").click (e) ->
-              toggleStar(obj, args)
-              e.stopPropagation()
+            obj.find(".collapsed").click -> showDetail(obj, args)
+            obj.find("div.entry-icons").click (e) ->
+                toggleStar(obj, args)
+                e.stopPropagation()
+
+            obj.find("div.entry-actions span:first").on "click", (e) -> toggleStar(obj, args)
+
+            obj.find("div.entry-actions span.read-state").on "click", (e) ->
+                $(this).toggleClass("read-state-not-kept-unread")
+                $(this).toggleClass("read-state-kept-unread")
+                obj.toggleClass("read")
 
         a(div, item)
 
@@ -541,6 +551,9 @@ do ($ = jQuery) ->
 
     # UI adjust
     $("div[role=button]").hover -> $(this).toggleClass("jfk-button-hover")
+    $("div[role=listbox]").hover -> $(this).toggleClass("goog-flat-menu-button-hover")
+    $("#entries-up").on "click", () -> $("#current-entry").prev().find(".collapsed").click()
+    $("#entries-down").on "click", () -> $("#current-entry").next().find(".collapsed").click()
 
     # html5 file system
     window.requestFileSystem  = window.requestFileSystem || window.webkitRequestFileSystem
