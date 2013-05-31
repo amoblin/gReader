@@ -1,7 +1,7 @@
 tag = `git describe --tag`
 
 default:
-	coffee -b -o gReader/js -c src
+	coffee -b -o gReader/media/js -c src
 
 zip:
 	rm -f gReader.zip

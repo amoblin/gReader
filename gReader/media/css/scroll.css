@@ -3195,10 +3195,13 @@ a:hover .tree-item-action-container, .scroll-tree li a.menu-open {
     top: 50%;
     height: 27px;
     margin-top: -13px;
-    width: 100%}
+    width: 100%
+}
+
 #settings-button-container {
     float: right;
 }
+
 #viewer-top-controls {
     overflow: hidden;
     padding: 0 3px 3px;

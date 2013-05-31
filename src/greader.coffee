@@ -108,6 +108,97 @@ showFolderContent = (dict) ->
             entries = JSON.parse(localStorage.getItem(item.feedUrl)).entries
             generateContentList(entries)
 
+toggleShortcutMap = () ->
+
+    div = $('<div class="banner banner-background keyboard-help-banner"></div>')
+    div2 = $('<div class="banner banner-foreground keyboard-help-banner"></div>')
+    content = $('''
+        <div class="primary-message">键盘快捷键</div>
+        <div class="secondary-message">
+        <div id="keyboard-help-container">
+        <table id="keyboard-help"><tbody><tr><td class="help-section"><table><tbody><tr><th colspan="2">浏览</th></tr>
+        <tr><td class="key">j/k：</td>
+        <td class="desc">下一个/上一个条目</td></tr>
+        <tr><td class="key">空格：</td>
+        <td class="desc">下一个条目或页面</td></tr>
+        <tr><td class="key">&lt;Shift&gt; + 空格：</td>
+        <td class="desc">上一个条目或页面</td></tr>
+        <tr><td class="key">n/p：</td>
+        <td class="desc">向下/向上扫描条目（仅列表）</td></tr>
+        <tr><td class="key">&lt;Shift&gt; + n/p：</td>
+        <td class="desc">下一个/上一个订阅</td></tr>
+        <tr><td class="key">&lt;Shift&gt; + x：</td>
+        <td class="desc">展开文件夹</td></tr>
+        <tr><td class="key">&lt;Shift&gt; + o：</td>
+        <td class="desc">打开订阅或文件夹</td></tr></tbody></table></td>
+        <td class="help-section"><table><tbody><tr><th colspan="2">应用</th></tr>
+        <tr><td class="key">r：</td>
+        <td class="desc">刷新</td></tr>
+        <tr><td class="key">f：</td>
+        <td class="desc">切换至全屏模式</td></tr>
+        <tr><td class="key">u：</td>
+        <td class="desc">隐藏/取消隐藏左侧模块</td></tr>
+        <tr><td class="key">1:</td>
+        <td class="desc">切换至扩展视图</td></tr>
+        <tr><td class="key">2:</td>
+        <td class="desc">切换至列表视图</td></tr>
+        <tr><td class="key">/:</td>
+        <td class="desc">将光标移动到搜索框</td></tr>
+        <tr><td class="key">a:</td>
+        <td class="desc">添加订阅</td></tr>
+        <tr><td class="key">=:</td>
+        <td class="desc">提高放大倍数</td></tr>
+        <tr><td class="key">-:</td>
+        <td class="desc">降低放大倍数</td></tr></tbody></table></td></tr>
+        <tr><td class="help-section"><table><tbody><tr><th colspan="2">跳转</th></tr>
+        <tr><td class="key">g 然后 h：</td>
+        <td class="desc">转到主页</td></tr>
+        <tr><td class="key">g 然后 a：</td>
+        <td class="desc">转到所有条目</td></tr>
+        <tr><td class="key">g 然后 s：</td>
+        <td class="desc">转到加星标条目</td></tr>
+        <tr><td class="key">g 然后 u：</td>
+        <td class="desc">打开订阅选择器</td></tr>
+        <tr><td class="key">g 然后 t：</td>
+        <td class="desc">打开标签选择器</td></tr>
+        <tr><td class="key">g 然后 &lt;Shift&gt; + t：</td>
+        <td class="desc">转到趋势页</td></tr>
+        <tr><td class="key">g 然后 d：</td>
+        <td class="desc">转到查找页</td></tr>
+        <tr><td class="key">依次按 g 和 e：</td>
+        <td class="desc">开始探索</td></tr>
+        <tr><td class="key">依次按 g 和 p：</td>
+        <td class="desc">转到热门条目</td></tr></tbody></table></td>
+        <td class="help-section"><table><tbody><tr><th colspan="2">对条目采取行动</th></tr>
+        <tr><td class="key">s：</td>
+        <td class="desc">为条目加注星标</td></tr>
+        <tr><td class="key">t：</td>
+        <td class="desc">标记条目</td></tr>
+        <tr><td class="key">e：</td>
+        <td class="desc">通过电子邮件发送条目</td></tr>
+        <tr><td class="key">&lt;Shift&gt; + s：</td>
+        <td class="desc">共享条目</td></tr>
+        <tr><td class="key">v：</td>
+        <td class="desc">查看原始内容</td></tr>
+        <tr><td class="key">或<enter>键：</enter></td>
+        <td class="desc">展开/折叠条目（仅限列表）</td></tr>
+        <tr><td class="key">m：</td>
+        <td class="desc">将条目标为已读/未读</td></tr>
+        <tr><td class="key">&lt;Shift&gt; + a：</td>
+        <td class="desc">全部标为已读</td></tr>
+        <tr><td class="key">&lt;Shift&gt; + t：</td>
+        <td class="desc">打开“发送到”菜单</td></tr></tbody></table></td></tr></tbody></table>
+        <div id="keyboard-help-tearoff-link-container"><span class="link keyboard-help-tearoff-link open-new-window-link">在新窗口中打开</span>
+        -
+        <span class="link keyboard-help-tearoff-link close-help-link">关闭</span>
+        </div>
+        </div>
+        </div>''')
+    div.append(content)
+    div2.append(content)
+    $('body').append(div)
+    $('body').append(div2)
+
 generateContentList = (entries) ->
     i = 0
     for item in entries
@@ -488,18 +579,17 @@ importFromGoogleReader = (subs) ->
         wrap_fun(item, folders)
 
 do ($ = jQuery) ->
-    if chrome.extension
-        $("#import-data-area").append('<input type="button" id="googleConnector" size="1" style="position:absolute;opacity:0;filter:alpha(opacity=0);z-index:1000"></input>')
-        $a = $("<a>从Google Reader导入订阅</a>")
-        $a.on "click", -> $("#googleConnector").click()
-        $("#import-data-area").append($a)
-        $("#googleConnector").on "click", login
-    else
-        $("#import-data-area").append('<input type="file" name="opml-file" id="opml-file" size="40" style="position:absolute;opacity:0;filter:alpha(opacity=0);z-index:1000"></input>')
-        $a = $("<a>从subscriptions.xml导入订阅</a>")
-        $a.on "click", -> $("#opml-file").click()
-        $("#import-data-area").append($a)
-        $('#opml-file').change -> importFromOpml(event)
+    $("#import-data-area").append('<input type="button" id="googleConnector" size="1" style="position:absolute;opacity:0;filter:alpha(opacity=0);z-index:1000"></input>')
+    $a = $("<a>从Google Reader导入订阅</a>")
+    $a.on "click", -> $("#googleConnector").click()
+    $("#import-data-area").append($a)
+    $("#googleConnector").on "click", login
+    
+    $("#import-data-area").append('<input type="file" name="opml-file" id="opml-file" size="40" style="position:absolute;opacity:0;filter:alpha(opacity=0);z-index:1000"></input>')
+    $a = $("<a>从subscriptions.xml导入订阅</a>")
+    $a.on "click", -> $("#opml-file").click()
+    $("#import-data-area").append($a)
+    $('#opml-file').change -> importFromOpml(event)
 
     # Navigate to settings page
     showSettingsPage = () ->
@@ -539,7 +629,7 @@ do ($ = jQuery) ->
     $("#chrome-view-links span div:eq(1)").on "click", toggleThreeColumnView
 
     # Setting menu event bindings
-    $('.settings-button-container').on 'click', () -> $('#settings-button-menu').toggle()
+    $('#settings-button-container').on 'click', () -> $('#settings-button-menu').toggle()
     $("#settings-button-menu .goog-menuitem-settings").on 'click', showSettingsPage
 
     $('#quickadd').bind 'keypress', (e) ->
@@ -584,4 +674,5 @@ do ($ = jQuery) ->
         if code == 102
             $("body").toggleClass("fullscreen")
             $("body").toggleClass("lhn-hidden")
+        if code == 63 then toggleShortcutMap()
 
