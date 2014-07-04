@@ -34,7 +34,9 @@ Google Reader UI 开发备忘
 
 Button
 
+```html
     <div role="button" class="jfk-button jfk-button-standard">
+```
 
 Button:hover
 
