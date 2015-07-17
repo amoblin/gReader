@@ -2,7 +2,7 @@
 
 gReader - Google Reader的移植版。
 
-在线使用： http://reader.marboo.biz
+在线使用： http://reader.marboo.io
 
 gReader for Chrome Extension: <http://marboo.googlecode.com/files/gReader_v0.1.crx>
 
