@@ -1,0 +1,24 @@
+{
+  "name": "greader",
+  "version": "1.0.0",
+  "description": "gReader - Google Reader的移植版。",
+  "main": "index.js",
+  "scripts": {
+      "build": "coffee -b -o gReader/media/js -c src",
+      "test": "echo \"Error: no test specified\" && exit 1"
+
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amoblin/gReader.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/amoblin/gReader/issues"
+  },
+  "homepage": "https://github.com/amoblin/gReader#readme",
+  "devDependencies": {
+    "coffeescript": "^2.3.2"
+  }
+}

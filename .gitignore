@@ -4,3 +4,4 @@ Thumbs.db
 
 # Ignore temp bat files in microsoft windows
 foo.bat
+node_modules/
